@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "454010895762",
+    "project_id": "wallet-hunter-app",
+    "storage_bucket": "wallet-hunter-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454010895762:android:9ea0800de5dff1f74ad54b",
+        "android_client_info": {
+          "package_name": "com.example.wallet_hunter_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLYZcAfnBqi2nF8x6mHLeItRXFF41uPe8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
