@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controller/auth_controller.dart';
-import '../../widgets/custom_text_field.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:wallet_hunter_app/features/auth/ui/registration/registration_screen.dart';
+import '../../controller/login_controller.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -39,8 +40,8 @@ class LoginScreen extends StatelessWidget {
                 // App logo
                 Image.asset(
                   "assets/app_logo.png",
-                  height: 80,
-                  width: 80,
+                  height: 100,
+                  width: 100,
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -59,21 +60,33 @@ class LoginScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-
-                Obx(() => CustomTextField(
-                  label: "Phone Number",
-                  isPassword: false,
-                  onChanged: authController.updatePhoneNumber,
-                  errorText: authController.phoneError.value,
+                Obx(() => IntlPhoneField(
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    errorText: loginController.phoneError.value.isEmpty
+                        ? null
+                        : loginController.phoneError.value,
+                  ),
+                  initialCountryCode: 'PK', // Default Pakistan
+                  onChanged: (phone) {
+                    loginController.updatePhoneNumber(phone.completeNumber);
+                  },
+                  keyboardType: TextInputType.phone,
+                  disableLengthCheck: true,
+                  showDropdownIcon: true,
                 )),
 
                 const SizedBox(height: 24),
 
-
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+
+                    },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -103,6 +116,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
+               Get.to(RegistrationScreen());
                   },
                   child: const Text("Don't have an account? Register here"),
                 ),

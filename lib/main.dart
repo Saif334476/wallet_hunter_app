@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'features/auth/ui/registration/otp/otp_screen.dart';
+import 'features/auth/ui/registration/registration_screen.dart';
+import 'features/family_head_form/family_head_form.dart';
 import 'firebase_options.dart';
 import 'app_theme.dart';
-import 'features/ui/login_screen.dart';
+import 'features/auth/ui/login/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +24,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => const LoginScreen()),
+        GetPage(name: '/registration', page: () => const RegistrationScreen()),
+        GetPage(name: '/otp', page: () => const OTPScreen()),
+        GetPage(name: '/family-head-form', page: () => const FamilyHeadForm()),
+      ],
       debugShowCheckedModeBanner: false,
       title: 'SuperStore',
       theme: AppTheme.lightTheme,

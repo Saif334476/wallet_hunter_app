@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AuthController extends GetxController {
+class LoginController extends GetxController {
   final phoneNumber = ''.obs;
   final phoneError = ''.obs;
 
@@ -10,4 +10,4 @@ class AuthController extends GetxController {
 
 }
 
-final authController = Get.put(AuthController());
+final loginController = Get.put(LoginController());
