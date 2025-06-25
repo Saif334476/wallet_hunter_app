@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:im_stepper/stepper.dart';
 import 'package:wallet_hunter_app/features/family_head_form/address_info.dart';
 import 'package:wallet_hunter_app/features/family_head_form/contact_info.dart';
 import 'package:wallet_hunter_app/features/family_head_form/head_form_controller.dart';
@@ -8,11 +7,12 @@ import 'package:wallet_hunter_app/features/family_head_form/personal_info.dart';
 import 'package:wallet_hunter_app/features/family_head_form/preview_submit.dart';
 import 'package:wallet_hunter_app/features/family_head_form/profile_info.dart';
 import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
+import '../../dashboard/dashboard.dart';
+import '../stepper/vertical_stepper.dart';
 
 class HeadFormNavigatorScreen extends StatelessWidget {
-  HeadFormNavigatorScreen({super.key,});
+  HeadFormNavigatorScreen({super.key});
   final controller = Get.put(HeadFormController());
-
 
   final List<Widget> steps = [
     ProfileInfoScreen(),
@@ -32,54 +32,53 @@ class HeadFormNavigatorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final args = Get.arguments;
+    final phone = args != null && args['phone'] != null ? args['phone'] as String : '';
     final theme = Theme.of(context);
-
+    final size = MediaQuery.of(context).size;
+    final isDesktop = size.width >= 700;
+    if (phone.isNotEmpty && controller.contactPhone.value.isEmpty) {
+      controller.updateField('contactPhone', phone);
+    }
+    print(phone);
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 16),
-
-
-            Obx(() => NumberStepper(
-              stepRadius: 12,
-              numbers: List.generate(steps.length, (index) => index + 1),
-              activeStep: controller.currentStep.value,
-              enableNextPreviousButtons: false,
-              enableStepTapping: false,
-              stepColor: Colors.grey.shade300,
-              activeStepColor: theme.colorScheme.primary,
-              numberStyle: const TextStyle(color: Colors.black),
-              activeStepBorderColor: theme.colorScheme.primary,
-            )),
-            const SizedBox(height: 12),
-
-
-            Obx(() => Text(
-              stepTitles[controller.currentStep.value],
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    height: 600,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        VerticalStepper(titles: stepTitles),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Center(
+                            child: Obx(() => steps[controller.currentStep.value]),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            )),
-            const SizedBox(height: 12),
+              const SizedBox(height: 32),
 
-
-            Expanded(
-              child: Obx(() => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: steps[controller.currentStep.value],
-              )),
-            ),
-
-            const SizedBox(height: 20),
-
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-              child: Obx(() => Row(
+              /// Navigation buttons
+              Obx(() => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
                   if (controller.currentStep.value > 0)
                     OutlinedButton(
                       onPressed: controller.previousStep,
@@ -87,25 +86,27 @@ class HeadFormNavigatorScreen extends StatelessWidget {
                     )
                   else
                     const SizedBox(width: 100),
+                  CustomElevatedButton(
+                    label: controller.currentStep.value == steps.length - 1
+                        ? 'Submit'
+                        : 'Next',
+                    onPressed: () {
+                      final current = controller.currentStep.value;
+                      if (_validateStep(current)) {
+                        if (current == steps.length - 1) {
+                          controller.submitHeadForm();
+                          Get.offAll(() =>const Dashboard());
 
-                CustomElevatedButton(label: controller.currentStep.value ==
-                    steps.length - 1
-                    ? 'Submit'
-                    : 'Next',     onPressed: () {
-                  final current = controller.currentStep.value;
-                  final isValid = _validateStep(current);
-                  if (isValid) {
-                    if (current == steps.length - 1) {
-                      controller.submitForm();
-                    } else {
-                      controller.nextStep();
-                    }
-                  }
-                },),
+                        } else {
+                          controller.nextStep();
+                        }
+                      }
+                    },
+                  ),
                 ],
               )),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -114,26 +115,22 @@ class HeadFormNavigatorScreen extends StatelessWidget {
   bool _validateStep(int stepIndex) {
     switch (stepIndex) {
       case 0:
-        if (!controller.validateProfileInfo()) {
-          Get.snackbar("Error", "Please fill all profile fields");
+        if (!controller.validateProfileFieldsIndividually()) {
           return false;
         }
         break;
       case 1:
-        if (!controller.validatePersonalInfo()) {
-          Get.snackbar("Error", "Please fill all personal info");
+        if (!controller.validatePersonalFields()) {
           return false;
         }
         break;
       case 2:
-        if (!controller.validateContactInfo()) {
-          Get.snackbar("Error", "Please fill all contact info");
+        if (!controller.validateContactFields()) {
           return false;
         }
         break;
       case 3:
-        if (!controller.validateAddressInfo()) {
-          Get.snackbar("Error", "Please fill all address info");
+        if (!controller.validateAddressFields()) {
           return false;
         }
         break;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'features/auth/ui/registration/otp/otp_screen.dart';
@@ -16,7 +15,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await dotenv.load(fileName: ".env");
+ // await dotenv.load();
   runApp(const MyApp());
 }
 
@@ -30,7 +29,7 @@ class MyApp extends StatelessWidget {
       getPages: [
         GetPage(name: '/', page: () => const LoginScreen()),
         GetPage(name: '/registration', page: () => const RegistrationScreen()),
-        GetPage(name: '/otp', page: () => const OTPScreen()),
+        GetPage(name: '/otp', page: () =>  OTPScreen()),
         GetPage(
           name: '/family-head-form',
           page: () => HeadFormNavigatorScreen(),
@@ -41,7 +40,7 @@ class MyApp extends StatelessWidget {
 
       ],
       debugShowCheckedModeBanner: false,
-      title: 'SuperStore',
+      title: 'Wallet Hunter',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,

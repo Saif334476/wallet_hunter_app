@@ -1,67 +1,151 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:google_maps_webservice/places.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-class PlacePickerTextField extends StatelessWidget {
+import 'package:http/http.dart' as http;
+import 'custom_text_field.dart';
+class PlacePickerTextField extends StatefulWidget {
   final String label;
-  final Function({
-  required String city,
-  required String state,
-  required String country,
-  required String pincode,
-  }) onPlaceSelected;
+  final String? componentFilter;
+  final void Function(String description) onSelected;
+  final String? errorText;
+  final String? initialValue; // ✅ Step 1
 
-  const PlacePickerTextField({super.key,
+  const PlacePickerTextField({
+    super.key,
     required this.label,
-    required this.onPlaceSelected,
+    this.componentFilter,
+    required this.onSelected,
+    this.errorText,
+    this.initialValue, // ✅ Step 1
   });
 
   @override
+  State<PlacePickerTextField> createState() => _PlacePickerTextFieldState();
+}
+
+class _PlacePickerTextFieldState extends State<PlacePickerTextField> {
+  final TextEditingController _controller = TextEditingController();
+  Timer? _debounce;
+  List<Prediction> _predictions = [];
+  bool _isLoading = false;
+
+  String get _apiKey => 'AIzaSyDGDin8KgtPcY9lZEJQ1W4vtqhPvO-oVyg';
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.initialValue ?? ''; // ✅ Step 2
+  }
+
+  @override
+  void didUpdateWidget(covariant PlacePickerTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue ?? '';
+    }
+  }
+
+  void _onChanged(String input) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      if (!mounted) return;
+      if (input.isNotEmpty) {
+        _fetchAutocomplete(input);
+      } else {
+        setState(() => _predictions = []);
+      }
+    });
+  }
+
+  Future<void> _fetchAutocomplete(String input) async {
+    setState(() => _isLoading = true);
+    final params = {'input': input, 'key': _apiKey};
+    if (widget.componentFilter != null) {
+      params['components'] = widget.componentFilter!;
+    }
+    final uri = Uri.https('maps.googleapis.com', '/maps/api/place/autocomplete/json', params);
+    try {
+      final res = await http.get(uri);
+      if (!mounted) return;
+      final jsonBody = jsonDecode(res.body);
+      if (jsonBody['status'] == 'OK') {
+        final list = (jsonBody['predictions'] as List);
+        setState(() => _predictions = list.map((e) => Prediction.fromJson(e)).toList());
+      } else {
+        setState(() => _predictions = []);
+      }
+    } catch (_) {
+      if (mounted) setState(() => _predictions = []);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _onPredictionTap(Prediction p) {
+    _controller.text = p.description;
+    setState(() => _predictions = []);
+    widget.onSelected(p.description);
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final apiKey = dotenv.env['GOOGLE_MAPS_API_KEY_ANDROID']!;
-
-    return TextFormField(
-      readOnly: true,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        filled: true,
-        fillColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[900]
-            : Colors.grey[200],
-      ),
-      onTap: () async {
-        Prediction? prediction = await PlacesAutocomplete.show(
-          context: context,
-          apiKey: apiKey,
-          mode: Mode.overlay,
-          language: "en",
-          components: [Component(Component.country, "pk",)],
-        );
-
-        if (prediction != null) {
-          final places = GoogleMapsPlaces(apiKey: apiKey);
-          final detail = await places.getDetailsByPlaceId(prediction.placeId!);
-          final result = detail.result;
-
-          String city = "", state = "", country = "", pincode = "";
-
-          for (var comp in result.addressComponents) {
-            if (comp.types.contains('locality')) city = comp.longName;
-            if (comp.types.contains('administrative_area_level_1')) state = comp.longName;
-            if (comp.types.contains('country')) country = comp.longName;
-            if (comp.types.contains('postal_code')) pincode = comp.longName;
-          }
-
-          onPlaceSelected(
-            city: city,
-            state: state,
-            country: country,
-            pincode: pincode,
-          );
-        }
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextField(
+          label: widget.label,
+          controller: _controller,
+          onChanged: (val) {
+            _onChanged(val);
+            widget.onSelected(val);
+          },
+          errorText: widget.errorText,
+        ),
+        if (_isLoading) const LinearProgressIndicator(),
+        if (_predictions.isNotEmpty)
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _predictions.length,
+            itemBuilder: (context, index) {
+              final p = _predictions[index];
+              return ListTile(
+                title: Text(p.mainText),
+                subtitle: Text(p.secondaryText),
+                onTap: () => _onPredictionTap(p),
+              );
+            },
+          ),
+      ],
     );
   }
+}
+
+class Prediction {
+  final String placeId;
+  final String description;
+  final String mainText;
+  final String secondaryText;
+
+  Prediction({
+    required this.placeId,
+    required this.description,
+    required this.mainText,
+    required this.secondaryText,
+  });
+
+  factory Prediction.fromJson(Map<String, dynamic> json) => Prediction(
+    placeId: json['place_id'],
+    description: json['description'],
+    mainText: json['structured_formatting']['main_text'],
+    secondaryText: json['structured_formatting']['secondary_text'] ?? '',
+  );
 }

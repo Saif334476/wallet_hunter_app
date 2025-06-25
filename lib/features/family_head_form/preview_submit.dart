@@ -52,7 +52,7 @@ class SummarySubmitScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () => controller.submitForm(),
+                  onPressed: () => controller.submitHeadForm(),
                   child: const Text("Submit"),
                 ),
               ],

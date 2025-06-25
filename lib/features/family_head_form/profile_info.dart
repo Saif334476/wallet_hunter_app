@@ -13,52 +13,58 @@ class ProfileInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomTextField(
-              label: "Full Name",
-              initialValue: controller.name.value,
-              onChanged: (v) => controller.updateField('name', v),
-            ),
-            CustomTextField(
-              label: "Age",
-              initialValue: controller.age.value,
-              onChanged: (v) => controller.updateField('age', v),
-              keyboardType: TextInputType.number,
-            ),
-            CustomDropdownField(
-              label: "Gender",
-              selectedValue: controller.gender.value,
-              options: const ["Male", "Female", "Other"],
-              onChanged: (v) => controller.updateField('gender', v),
-            ),
-            CustomDropdownField(
-              label: "Marital Status",
-              selectedValue: controller.maritalStatus.value,
-              options: const ["Single", "Married", "Divorced", "Widowed"],
-              onChanged: (v) => controller.updateField('maritalStatus', v),
-            ),
-            CustomTextField(
-              label: "Occupation",
-              initialValue: controller.occupation.value,
-              onChanged: (v) => controller.updateField('occupation', v),
-            ),
-            CustomTextField(
-              label: "Samaj Name",
-              initialValue: controller.samajName.value,
-              onChanged: (v) => controller.updateField('samajName', v),
-            ),
-            CustomTextField(
-              label: "Qualification",
-              initialValue: controller.qualification.value,
-              onChanged: (v) => controller.updateField('qualification', v),
-            ),
-          ],
-        ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Obx(() => CustomTextField(
+            label: "Full Name",
+            initialValue: controller.name.value,
+            errorText: controller.nameError.value,
+            onChanged: (v) => controller.updateField('name', v),
+          )),
+          Obx(() => CustomTextField(
+            label: "Age",
+            initialValue: controller.age.value,
+            keyboardType: TextInputType.number,
+            errorText: controller.ageError.value,
+            onChanged: (v) => controller.updateField('age', v),
+          )),
+          Obx(() => CustomDropdownField(
+            label: "Gender",
+            selectedValue: controller.gender.value,
+            options: const ["Male", "Female", "Other"],
+            errorText: controller.genderError.value,
+            onChanged: (v) => controller.updateField('gender', v),
+          )),
+          Obx(() => CustomDropdownField(
+            label: "Marital Status",
+            selectedValue: controller.maritalStatus.value,
+            options: const ["Single", "Married", "Divorced", "Widowed"],
+            errorText: controller.maritalStatusError.value,
+            onChanged: (v) => controller.updateField('maritalStatus', v),
+          )),
+          Obx(() => CustomTextField(
+            label: "Occupation",
+            initialValue: controller.occupation.value,
+            errorText: controller.occupationError.value,
+            onChanged: (v) => controller.updateField('occupation', v),
+          )),
+          Obx(() => CustomTextField(
+            label: "Samaj Name",
+            initialValue: controller.samajName.value,
+            errorText: controller.samajNameError.value,
+            onChanged: (v) => controller.updateField('samajName', v),
+          )),
+          Obx(() => CustomTextField(
+            label: "Qualification",
+            initialValue: controller.qualification.value,
+            errorText: controller.qualificationError.value,
+            onChanged: (v) => controller.updateField('qualification', v),
+          )),
+          
+        ],
       ),
     );
   }

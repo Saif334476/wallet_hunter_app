@@ -40,10 +40,11 @@ class OTPController extends GetxController {
         smsCode: otpCode.value,
       );
       await _auth.signInWithCredential(credential);
-
-      // Navigate to Family Head Form
       Get.snackbar("Success", "Phone verified successfully");
-      Get.offAllNamed('/family-head-form');
+      Get.offAllNamed('/family-head-form', arguments: {
+        'phone': phoneNumber.value,
+      });
+
     } catch (e) {
       Get.snackbar("Error", "OTP verification failed");
     } finally {
@@ -54,6 +55,7 @@ class OTPController extends GetxController {
   void resendOTP() async {
     await _auth.verifyPhoneNumber(
       phoneNumber: phoneNumber.value,
+      timeout: const Duration(seconds: 60),
       verificationCompleted: (_) {},
       verificationFailed: (e) {
         Get.snackbar("Error", e.message ?? "OTP resend failed");
@@ -70,6 +72,7 @@ class OTPController extends GetxController {
   }
 
   void setData({required String phone, required String vId}) {
+    print("✅ setData called with: phone = $phone, vId = $vId");
     phoneNumber.value = phone;
     verificationId.value = vId;
     startTimer();

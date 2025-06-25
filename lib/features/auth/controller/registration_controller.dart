@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../ui/registration/otp/otp_controller.dart';
+
 
 class RegistrationController extends GetxController {
   final phoneNumber = ''.obs;
@@ -31,11 +33,20 @@ class RegistrationController extends GetxController {
           Get.snackbar('Success', 'Logged in automatically');
         }
       },
+      timeout: const Duration(seconds: 60),
       verificationFailed: (FirebaseAuthException e) {
         Get.snackbar('Verification Failed', e.message ?? 'Unknown error');
       },
       codeSent: (String verificationId, int? resendToken) {
         _verificationId = verificationId;
+
+        /// ✅ Set values in OTP controller
+        final otpController = Get.put(OTPController());
+        otpController.setData(
+          phone: phoneNumber.value.trim(),
+          vId: verificationId,
+        );
+
         Get.toNamed('/otp', arguments: {
           'phoneNumber': phoneNumber.value.trim(),
           'verificationId': verificationId,

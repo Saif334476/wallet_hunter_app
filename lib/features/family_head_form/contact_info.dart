@@ -17,35 +17,52 @@ class ContactInfoScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
-            CustomTextField(
-              label: "Email ID",
-              initialValue: controller.contactEmail.value,
-              onChanged: (v) => controller.updateField('contactEmail', v),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            CustomTextField(
-              label: "Phone Number",
-              initialValue: controller.contactPhone.value,
-              onChanged: (v) => controller.updateField('contactPhone', v),
-              keyboardType: TextInputType.phone,
-            ),
+
+            Obx(() {
+              return CustomTextField(
+                label: "Email ID",
+                initialValue: controller.contactEmail.value,
+                onChanged: (v) =>
+                    controller.updateFieldAndClearError('contactEmail', v),
+                keyboardType: TextInputType.emailAddress,
+                errorText: controller.contactEmailError.value,
+              );
+            }),
+
+            Obx(() {
+              return CustomTextField(
+                label: "Phone Number",
+                initialValue: controller.contactPhone.value,
+                onChanged: (v) =>
+                    controller.updateFieldAndClearError('contactPhone', v),
+                keyboardType: TextInputType.phone,
+                readOnly: true,
+                errorText: controller.contactPhoneError.value,
+              );
+            }),
+
             CustomTextField(
               label: "Alternative Number",
               initialValue: controller.contactAlternate.value,
-              onChanged: (v) => controller.updateField('contactAlternate', v),
+              onChanged: (v) =>
+                  controller.updateFieldAndClearError('contactAlternate', v),
               keyboardType: TextInputType.phone,
             ),
+
             CustomTextField(
               label: "Landline Number",
               initialValue: controller.contactLandline.value,
-              onChanged: (v) => controller.updateField('contactLandline', v),
+              onChanged: (v) =>
+                  controller.updateFieldAndClearError('contactLandline', v),
               keyboardType: TextInputType.phone,
             ),
             CustomTextField(
               label: "Social Media Link",
               initialValue: controller.contactSocial.value,
-              onChanged: (v) => controller.updateField('contactSocial', v),
+              onChanged: (v) =>
+                  controller.updateFieldAndClearError('contactSocial', v),
               keyboardType: TextInputType.url,
             ),
           ],
