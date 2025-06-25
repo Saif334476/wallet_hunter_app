@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomDropdownField extends StatelessWidget {
   final String label;
-  final String? initialValue;
-  final void Function(String value) onChanged;
+  final String? selectedValue;
+  final List<String> options;
+  final void Function(String) onChanged;
   final String? errorText;
-  final bool isPassword;
-  final TextInputType keyboardType;
 
-  const CustomTextField({
+  const CustomDropdownField({
     super.key,
     required this.label,
-    this.initialValue,
+    required this.selectedValue,
+    required this.options,
     required this.onChanged,
     this.errorText,
-    this.isPassword = false,
-    this.keyboardType = TextInputType.text,
   });
 
   @override
@@ -25,14 +23,19 @@ class CustomTextField extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
-      child: TextFormField(
-        initialValue: initialValue,
-        obscureText: isPassword,
-        keyboardType: keyboardType,
-        onChanged: onChanged,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: isDark ? Colors.white : Colors.black87,
-        ),
+      child: DropdownButtonFormField<String>(
+        value: selectedValue?.isEmpty ?? true ? null : selectedValue,
+        items: options
+            .map((opt) => DropdownMenuItem<String>(
+          value: opt,
+          child: Text(opt),
+        ))
+            .toList(),
+        onChanged: (value) {
+          if (value != null) {
+            onChanged(value);
+          }
+        },
         decoration: InputDecoration(
           labelText: label,
           errorText: errorText,

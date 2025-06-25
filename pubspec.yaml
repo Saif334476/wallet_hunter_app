@@ -41,6 +41,12 @@ dependencies:
   firebase_core: ^3.14.0
   intl_phone_field: ^3.2.0
   pin_code_fields: ^8.0.1
+  im_stepper: ^1.0.1+1
+  cool_stepper: ^1.2.1
+  flutter_google_places: ^0.3.0
+  google_maps_webservice: ^0.0.20-nullsafety.5
+  http: ^0.13.6
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:

@@ -43,7 +43,7 @@ class OTPController extends GetxController {
 
       // Navigate to Family Head Form
       Get.snackbar("Success", "Phone verified successfully");
-      Get.offAllNamed('/head-registration');
+      Get.offAllNamed('/family-head-form');
     } catch (e) {
       Get.snackbar("Error", "OTP verification failed");
     } finally {

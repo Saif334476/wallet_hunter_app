@@ -45,5 +45,19 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- ✅ Added iOS Permissions & Firebase Config -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access for scanning and profile pictures.</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need microphone access for audio features.</string>
+
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To allow image upload from your gallery.</string>
+
+	<!-- ✅ Firebase proxy override (needed if you manually configure Firebase) -->
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 </dict>
 </plist>

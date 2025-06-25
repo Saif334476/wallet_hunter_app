@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:wallet_hunter_app/features/auth/ui/registration/registration_screen.dart';
+import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
 import '../../controller/login_controller.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -20,7 +21,8 @@ class LoginScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Container(
-            constraints: BoxConstraints(maxWidth: isDesktop ? 500 : double.infinity),
+            constraints:
+                BoxConstraints(maxWidth: isDesktop ? 500 : double.infinity),
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
               color: theme.cardColor,
@@ -61,49 +63,30 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 32),
 
                 Obx(() => IntlPhoneField(
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    errorText: loginController.phoneError.value.isEmpty
-                        ? null
-                        : loginController.phoneError.value,
-                  ),
-                  initialCountryCode: 'PK', // Default Pakistan
-                  onChanged: (phone) {
-                    loginController.updatePhoneNumber(phone.completeNumber);
-                  },
-                  keyboardType: TextInputType.phone,
-                  disableLengthCheck: true,
-                  showDropdownIcon: true,
-                )),
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        errorText: loginController.phoneError.value.isEmpty
+                            ? null
+                            : loginController.phoneError.value,
+                      ),
+                      initialCountryCode: 'PK', // Default Pakistan
+                      onChanged: (phone) {
+                        loginController.updatePhoneNumber(phone.completeNumber);
+                      },
+                      keyboardType: TextInputType.phone,
+                      disableLengthCheck: true,
+                      showDropdownIcon: true,
+                    )),
 
                 const SizedBox(height: 24),
 
                 SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ).copyWith(
-                      backgroundColor: MaterialStatePropertyAll(colorScheme.primary),
-                      foregroundColor: MaterialStatePropertyAll(colorScheme.onPrimary),
-                    ),
-                    child: Text(
-                      "Send OTP",
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
+                    width: double.infinity,
+                    child: CustomElevatedButton(
+                        label: "Send Otp", onPressed: () {})),
 
                 const SizedBox(height: 20),
                 Text(
@@ -116,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-               Get.to(RegistrationScreen());
+                    Get.to(RegistrationScreen());
                   },
                   child: const Text("Don't have an account? Register here"),
                 ),
