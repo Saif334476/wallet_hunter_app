@@ -1,0 +1,125 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
+import '../../widgets/custom_stepper.dart';
+import 'family_address_info_step.dart';
+import 'family_contact_info_step.dart';
+import 'family_member_form_controller.dart';
+import 'family_personal_info_step.dart';
+import 'family_profile_info_step.dart';
+
+
+class FamilyMemberRegistrationScreen extends StatelessWidget {
+  FamilyMemberRegistrationScreen({super.key});
+
+  final FamilyMemberFormController controller =
+  Get.put(FamilyMemberFormController());
+
+  final List<Widget> steps = [
+    FamilyProfileInfoStep(),
+    FamilyPersonalInfoStep(),
+    FamilyContactInfoStep(),
+    FamilyAddressInfoStep(),
+  ];
+
+  final List<String> stepTitles = [
+    'Profile',
+    'Personal',
+    'Contact',
+    'Address',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: SizedBox(
+                    height: 600,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          child: CustomVerticalStepper(
+                            titles: stepTitles, currentStep: controller.currentStep,
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Obx(() => steps[controller.currentStep.value]),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+
+              /// Navigation Buttons
+              Obx(() => Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (controller.currentStep.value > 0)
+                    OutlinedButton(
+                      onPressed: controller.previousStep,
+                      child: const Text('Back'),
+                    )
+                  else
+                    const SizedBox(width: 100),
+                  CustomElevatedButton(
+                    label: controller.currentStep.value ==
+                        steps.length - 1
+                        ? "Submit"
+                        : "Next",
+                    onPressed: () {
+                      final current = controller.currentStep.value;
+                      if (_validateStep(current)) {
+                        if (current == steps.length - 1) {
+                          controller.submitMember();
+                          Get.offAllNamed("/dashboard");
+                        } else {
+                          controller.nextStep();
+                        }
+                      }
+                    },
+                  ),
+                ],
+              )),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  bool _validateStep(int stepIndex) {
+    switch (stepIndex) {
+      case 0:
+        return controller.validateProfileStep();
+      case 1:
+        return controller.validatePersonalStep();
+      case 2:
+        return controller.validateContactStep();
+      case 3:
+        return controller.validateAddressStep();
+      default:
+        return false;
+    }
+  }
+}

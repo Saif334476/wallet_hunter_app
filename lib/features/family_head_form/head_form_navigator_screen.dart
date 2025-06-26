@@ -8,7 +8,8 @@ import 'package:wallet_hunter_app/features/family_head_form/preview_submit.dart'
 import 'package:wallet_hunter_app/features/family_head_form/profile_info.dart';
 import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
 import '../../dashboard/dashboard.dart';
-import '../stepper/vertical_stepper.dart';
+import '../../widgets/custom_stepper.dart';
+
 
 class HeadFormNavigatorScreen extends StatelessWidget {
   HeadFormNavigatorScreen({super.key});
@@ -33,7 +34,8 @@ class HeadFormNavigatorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final args = Get.arguments;
-    final phone = args != null && args['phone'] != null ? args['phone'] as String : '';
+    final phone =
+        args != null && args['phone'] != null ? args['phone'] as String : '';
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width >= 700;
@@ -61,11 +63,17 @@ class HeadFormNavigatorScreen extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        VerticalStepper(titles: stepTitles),
+                        SizedBox(
+                          width: 100,
+                            child: CustomVerticalStepper(
+                          titles: stepTitles,currentStep: controller.currentStep,
+                          //currentStep: controller.currentStep,
+                        )),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Center(
-                            child: Obx(() => steps[controller.currentStep.value]),
+                            child:
+                                Obx(() => steps[controller.currentStep.value]),
                           ),
                         ),
                       ],
@@ -77,34 +85,33 @@ class HeadFormNavigatorScreen extends StatelessWidget {
 
               /// Navigation buttons
               Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (controller.currentStep.value > 0)
-                    OutlinedButton(
-                      onPressed: controller.previousStep,
-                      child: const Text('Back'),
-                    )
-                  else
-                    const SizedBox(width: 100),
-                  CustomElevatedButton(
-                    label: controller.currentStep.value == steps.length - 1
-                        ? 'Submit'
-                        : 'Next',
-                    onPressed: () {
-                      final current = controller.currentStep.value;
-                      if (_validateStep(current)) {
-                        if (current == steps.length - 1) {
-                          controller.submitHeadForm();
-                          Get.offAll(() =>const Dashboard());
-
-                        } else {
-                          controller.nextStep();
-                        }
-                      }
-                    },
-                  ),
-                ],
-              )),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (controller.currentStep.value > 0)
+                        OutlinedButton(
+                          onPressed: controller.previousStep,
+                          child: const Text('Back'),
+                        )
+                      else
+                        const SizedBox(width: 100),
+                      CustomElevatedButton(
+                        label: controller.currentStep.value == steps.length - 1
+                            ? 'Submit'
+                            : 'Next',
+                        onPressed: () {
+                          final current = controller.currentStep.value;
+                          if (_validateStep(current)) {
+                            if (current == steps.length - 1) {
+                              controller.submitHeadForm();
+                              Get.offAll(() => const Dashboard());
+                            } else {
+                              controller.nextStep();
+                            }
+                          }
+                        },
+                      ),
+                    ],
+                  )),
             ],
           ),
         ),

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:wallet_hunter_app/dashboard/dashboard.dart';
+import 'package:wallet_hunter_app/splash_screen.dart';
 import 'features/auth/ui/registration/otp/otp_screen.dart';
 import 'features/auth/ui/registration/registration_screen.dart';
 import 'features/family_head_form/head_form_controller.dart';
 import 'features/family_head_form/head_form_navigator_screen.dart';
 import 'firebase_options.dart';
 import 'app_theme.dart';
-import 'features/auth/ui/login/login_screen.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,9 +29,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       initialRoute: '/',
       getPages: [
-        GetPage(name: '/', page: () => const LoginScreen()),
+        //GetPage(name: '/', page: () => const LoginScreen()),
+        GetPage(name: '/', page: () => const SplashScreen()),
         GetPage(name: '/registration', page: () => const RegistrationScreen()),
         GetPage(name: '/otp', page: () =>  OTPScreen()),
+        GetPage(name: '/dashboard', page: () =>  const Dashboard()),
         GetPage(
           name: '/family-head-form',
           page: () => HeadFormNavigatorScreen(),
@@ -44,7 +48,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

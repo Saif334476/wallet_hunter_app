@@ -41,7 +41,7 @@ class RegistrationScreen extends StatelessWidget {
                       Image.asset("assets/app_logo.png", height: 80),
                       const SizedBox(height: 16),
                       Text(
-                        "Register with Phone Number",
+                        "Welcome to Wallet Hunter",
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -98,15 +98,7 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
-                Center(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Already have an account? Login"),
-                  ),
-                )
+              
               ],
             ),
           ),

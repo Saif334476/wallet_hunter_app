@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -41,9 +42,19 @@ class OTPController extends GetxController {
       );
       await _auth.signInWithCredential(credential);
       Get.snackbar("Success", "Phone verified successfully");
-      Get.offAllNamed('/family-head-form', arguments: {
-        'phone': phoneNumber.value,
-      });
+
+      final userDoc = await FirebaseFirestore.instance
+          .collection('family_heads')
+          .doc(_auth.currentUser?.uid)
+          .get();
+
+      if (userDoc.exists && userDoc.data()?['isRegistrationCompleted'] == true) {
+        Get.offAllNamed('/dashboard');
+      } else {
+        Get.offAllNamed('/family-head-form', arguments: {
+          'phone': phoneNumber.value,
+        });
+      }
 
     } catch (e) {
       Get.snackbar("Error", "OTP verification failed");

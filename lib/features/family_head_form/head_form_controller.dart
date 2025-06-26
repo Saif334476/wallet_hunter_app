@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../models/family_head_model.dart';
@@ -223,7 +225,12 @@ class HeadFormController extends GetxController {
 
       await FirebaseFirestore.instance
           .collection('family_heads')
-          .add(model.toMap());
+          .doc(FirebaseAuth.instance.currentUser?.uid)
+          .set({
+        ...model.toMap(),
+        'isRegistrationCompleted': true,
+      });
+
 
       Get.snackbar("✅ Success", "Form submitted successfully!");
     } catch (e) {

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:wallet_hunter_app/features/family_head_form/head_form_controller.dart';
 import 'package:wallet_hunter_app/widgets/custom_text_field.dart';
+import '../../widgets/custom_birth_date_text_field.dart';
 import '../../widgets/custom_dropdown.dart';
 
 class PersonalInfoScreen extends StatelessWidget {
@@ -11,59 +12,66 @@ class PersonalInfoScreen extends StatelessWidget {
   final HeadFormController controller = Get.find();
 
   final List<String> bloodGroups = [
-    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-',
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
   ];
-
-  Future<void> _pickDate(BuildContext context) async {
-    final initialDate = controller.birthDate.value.isNotEmpty
-        ? DateFormat.yMd().parse(controller.birthDate.value)
-        : DateTime.now().subtract(const Duration(days: 365 * 20));
-
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (ctx, child) {
-        final isDark = Theme.of(ctx).brightness == Brightness.dark;
-        return Theme(
-          data: isDark
-              ? ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: Theme.of(ctx).colorScheme.primary,
-              onPrimary: Theme.of(ctx).colorScheme.onPrimary,
-              onSurface: Theme.of(ctx).colorScheme.onSurface,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(ctx).colorScheme.primary,
-              ),
-            ),
-          )
-              : ThemeData.light().copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Theme.of(ctx).colorScheme.primary,
-              onPrimary: Theme.of(ctx).colorScheme.onPrimary,
-              onSurface: Theme.of(ctx).colorScheme.onSurface,
-            ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(ctx).colorScheme.primary,
-              ),
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null) {
-      controller.updateFieldAndClearError(
-        'birthDate',
-        DateFormat.yMd().format(picked),
-      );
-    }
-  }
+  //
+  // Future<void> _pickDate(BuildContext context) async {
+  //   final initialDate = controller.birthDate.value.isNotEmpty
+  //       ? DateFormat.yMd().parse(controller.birthDate.value)
+  //       : DateTime.now().subtract(const Duration(days: 365 * 20));
+  //
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: initialDate,
+  //     firstDate: DateTime(1900),
+  //     lastDate: DateTime.now(),
+  //     builder: (ctx, child) {
+  //       final isDark = Theme.of(ctx).brightness == Brightness.dark;
+  //       return Theme(
+  //         data: isDark
+  //             ? ThemeData.dark().copyWith(
+  //           colorScheme: ColorScheme.dark(
+  //             primary: Theme.of(ctx).colorScheme.primary,
+  //             onPrimary: Theme.of(ctx).colorScheme.onPrimary,
+  //             onSurface: Theme.of(ctx).colorScheme.onSurface,
+  //           ),
+  //           textButtonTheme: TextButtonThemeData(
+  //             style: TextButton.styleFrom(
+  //               foregroundColor: Theme.of(ctx).colorScheme.primary,
+  //             ),
+  //           ),
+  //         )
+  //             : ThemeData.light().copyWith(
+  //           colorScheme: ColorScheme.light(
+  //             primary: Theme.of(ctx).colorScheme.primary,
+  //             onPrimary: Theme.of(ctx).colorScheme.onPrimary,
+  //             onSurface: Theme.of(ctx).colorScheme.onSurface,
+  //           ),
+  //           textButtonTheme: TextButtonThemeData(
+  //             style: TextButton.styleFrom(
+  //               foregroundColor: Theme.of(ctx).colorScheme.primary,
+  //             ),
+  //           ),
+  //         ),
+  //         child: child!,
+  //       );
+  //     },
+  //   );
+  //
+  //   if (picked != null) {
+  //     controller.updateFieldAndClearError(
+  //       'birthDate',
+  //       DateFormat.yMd().format(picked),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,37 +80,18 @@ class PersonalInfoScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// Birth Date Field (Reactive)
-          Obx(() {
-            return TextFormField(
-              readOnly: true,
-              onTap: () => _pickDate(context),
-              controller: TextEditingController(
-                text: controller.birthDate.value,
-              ),
-              decoration: InputDecoration(
-                labelText: "Birth Date",
-                errorText: controller.birthDateError.value,
-                suffixIcon: const Icon(Icons.calendar_month),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                filled: true,
-                fillColor: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey[900]
-                    : Colors.grey[200],
-              ),
-              style: Theme.of(context).textTheme.bodyMedium,
-            );
-          }),
 
-          const SizedBox(height: 16),
-
-          /// Blood Group Dropdown (Reactive)
           Obx(() {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                 BirthDateField(
+                  dateValue: controller.birthDate,
+                  errorValue: controller.birthDateError,
+                  onDatePicked: (value) =>
+                      controller.updateFieldAndClearError('birthDate', value),
+                ),
+                const SizedBox(height: 16),
                 CustomDropdownField(
                   label: "Blood Group",
                   selectedValue: controller.bloodGroup.value,
@@ -125,10 +114,7 @@ class PersonalInfoScreen extends StatelessWidget {
               ],
             );
           }),
-
           const SizedBox(height: 16),
-
-          /// Nature of Duties TextField (Reactive)
           Obx(() {
             return CustomTextField(
               label: "Exact Nature of Duties",
