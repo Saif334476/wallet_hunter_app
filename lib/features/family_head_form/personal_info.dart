@@ -86,6 +86,18 @@ class PersonalInfoScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
+                Obx(() => CustomTextField(
+                  label: "Marital Status",
+                  initialValue: controller.maritalStatus.value,
+                  errorText: controller.maritalStatusError.value,
+                  onChanged: (v) => controller.updateFieldAndClearError('maritalStatus', v),
+                )),
+                Obx(() => CustomTextField(
+                  label: "Qualification",
+                  initialValue: controller.qualification.value,
+                  errorText: controller.qualificationError.value,
+                  onChanged: (v) => controller.updateFieldAndClearError('qualification', v),
+                )),
                  BirthDateField(
                   dateValue: controller.birthDate,
                   errorValue: controller.birthDateError,

@@ -19,51 +19,53 @@ class ProfileInfoScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Obx(() => CustomTextField(
-            label: "Full Name",
-            initialValue: controller.name.value,
-            errorText: controller.nameError.value,
-            onChanged: (v) => controller.updateField('name', v),
-          )),
+                label: "Full Name",
+                initialValue: controller.name.value,
+                errorText: controller.nameError.value,
+                onChanged: (v) => controller.updateFieldAndClearError('name', v),
+              )),
           Obx(() => CustomTextField(
-            label: "Age",
-            initialValue: controller.age.value,
-            keyboardType: TextInputType.number,
-            errorText: controller.ageError.value,
-            onChanged: (v) => controller.updateField('age', v),
-          )),
+                label: "Age",
+                initialValue: controller.age.value,
+                keyboardType: TextInputType.number,
+                errorText: controller.ageError.value,
+                onChanged: (v) => controller.updateFieldAndClearError('age', v),
+              )),
           Obx(() => CustomDropdownField(
-            label: "Gender",
-            selectedValue: controller.gender.value,
-            options: const ["Male", "Female", "Other"],
-            errorText: controller.genderError.value,
-            onChanged: (v) => controller.updateField('gender', v),
-          )),
-          Obx(() => CustomDropdownField(
-            label: "Marital Status",
-            selectedValue: controller.maritalStatus.value,
-            options: const ["Single", "Married", "Divorced", "Widowed"],
-            errorText: controller.maritalStatusError.value,
-            onChanged: (v) => controller.updateField('maritalStatus', v),
-          )),
+                label: "Gender",
+                selectedValue: controller.gender.value,
+                options: const ["Male", "Female", "Other"],
+                errorText: controller.genderError.value,
+                onChanged: (v) => controller.updateFieldAndClearError('gender', v),
+              )),
+          Obx(
+            () => CustomDropdownField(
+              label: "Samaj Name",
+              selectedValue: controller.samajName.value,
+              options: const [
+                "Lohana",
+                "Modh Vanik",
+                "Patel",
+                "Brahmin",
+                "Baniya",
+                "Rajput",
+                "Other"
+              ],
+              errorText: controller.samajNameError.value,
+              onChanged: (value) {
+                controller.updateFieldAndClearError('samajName', value);
+              },
+            ),
+          ),
+
           Obx(() => CustomTextField(
-            label: "Occupation",
-            initialValue: controller.occupation.value,
-            errorText: controller.occupationError.value,
-            onChanged: (v) => controller.updateField('occupation', v),
-          )),
-          Obx(() => CustomTextField(
-            label: "Samaj Name",
-            initialValue: controller.samajName.value,
-            errorText: controller.samajNameError.value,
-            onChanged: (v) => controller.updateField('samajName', v),
-          )),
-          Obx(() => CustomTextField(
-            label: "Qualification",
-            initialValue: controller.qualification.value,
-            errorText: controller.qualificationError.value,
-            onChanged: (v) => controller.updateField('qualification', v),
-          )),
-          
+                label: "Occupation",
+                initialValue: controller.occupation.value,
+                errorText: controller.occupationError.value,
+                onChanged: (v) => controller.updateFieldAndClearError('occupation', v),
+              )),
+
+
         ],
       ),
     );
