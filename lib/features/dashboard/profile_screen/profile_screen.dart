@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:wallet_hunter_app/dashboard/profile_screen/profile_controller.dart';
+import 'package:wallet_hunter_app/features/dashboard/profile_screen/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   final ProfileController controller = Get.put(ProfileController());

@@ -7,8 +7,8 @@ import 'package:wallet_hunter_app/features/family_head_form/personal_info.dart';
 import 'package:wallet_hunter_app/features/family_head_form/preview_submit.dart';
 import 'package:wallet_hunter_app/features/family_head_form/profile_info.dart';
 import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
-import '../../dashboard/dashboard.dart';
 import '../../widgets/custom_stepper.dart';
+import '../dashboard/dashboard.dart';
 
 
 class HeadFormNavigatorScreen extends StatelessWidget {
@@ -64,7 +64,7 @@ class HeadFormNavigatorScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
-                          width: 100,
+                          width: 80,
                             child: CustomVerticalStepper(
                           titles: stepTitles,currentStep: controller.currentStep,
                           //currentStep: controller.currentStep,

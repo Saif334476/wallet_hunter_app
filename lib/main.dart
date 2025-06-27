@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:wallet_hunter_app/dashboard/dashboard.dart';
 import 'package:wallet_hunter_app/splash_screen.dart';
 import 'features/auth/ui/registration/otp/otp_screen.dart';
 import 'features/auth/ui/registration/registration_screen.dart';
+import 'features/dashboard/dashboard.dart';
 import 'features/family_head_form/head_form_controller.dart';
 import 'features/family_head_form/head_form_navigator_screen.dart';
 import 'firebase_options.dart';

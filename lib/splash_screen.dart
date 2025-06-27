@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:wallet_hunter_app/dashboard/dashboard.dart';
 import 'package:wallet_hunter_app/features/auth/ui/registration/registration_screen.dart';
 import 'features/animated_dots.dart';
+import 'features/dashboard/dashboard.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

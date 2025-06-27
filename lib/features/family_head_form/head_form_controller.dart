@@ -240,8 +240,6 @@ class HeadFormController extends GetxController {
   }
 
 
-
-  // Convenience Getters
   RxString get profileName => name;
   RxString get contactEmailDisplay => contactEmail;
   RxString get contactPhoneDisplay => contactPhone;

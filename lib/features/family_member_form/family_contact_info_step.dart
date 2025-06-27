@@ -30,12 +30,20 @@ class FamilyContactInfoStep extends StatelessWidget {
             errorText: controller.contactAlternateError.value,
           )),
           Obx(() => CustomTextField(
+            label: "Landline Number",
+            keyboardType: TextInputType.phone,
+            initialValue: controller.contactLandline.value,
+            onChanged: (v) => controller.updateField('contactLandline', v),
+            errorText: controller.contactLandlineError.value,
+          )),
+          Obx(() => CustomTextField(
             label: "Email",
             keyboardType: TextInputType.emailAddress,
             initialValue: controller.contactEmail.value,
             onChanged: (v) => controller.updateField('contactEmail', v),
             errorText: controller.contactEmailError.value,
           )),
+
         ],
       ),
     );

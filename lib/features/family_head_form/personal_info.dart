@@ -84,6 +84,7 @@ class PersonalInfoScreen extends StatelessWidget {
           Obx(() {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+
               children: [
                  BirthDateField(
                   dateValue: controller.birthDate,

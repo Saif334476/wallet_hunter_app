@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wallet_hunter_app/dashboard/profile_screen/profile_screen.dart';
+import 'package:wallet_hunter_app/features/dashboard/profile_screen/profile_screen.dart';
 import 'package:wallet_hunter_app/features/family_member_form/family_member_form_navigator_screen.dart';
+import 'family_tree/family_tree.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -13,7 +14,7 @@ class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    const Center(child: Text("Relationship Tree")),
+    Center(child: FamilyTreeScreen()),
     Center(child: FamilyMemberRegistrationScreen()),
     Center(child:ProfileScreen()),
   ];
@@ -29,6 +30,7 @@ class _DashboardState extends State<Dashboard> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
+
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
         margin: const EdgeInsets.all(12),

@@ -2,13 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_hunter_app/widgets/custom_text_field.dart';
 import 'package:wallet_hunter_app/features/family_member_form/family_member_form_controller.dart';
-
 import '../../widgets/custom_birth_date_text_field.dart';
+import '../../widgets/custom_dropdown.dart';
 
 class FamilyPersonalInfoStep extends StatelessWidget {
   FamilyPersonalInfoStep({super.key});
 
   final FamilyMemberFormController controller = Get.find();
+  final List<String> bloodGroups = [
+    'A+',
+    'A-',
+    'B+',
+    'B-',
+    'AB+',
+    'AB-',
+    'O+',
+    'O-',
+  ];
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,18 +28,45 @@ class FamilyPersonalInfoStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Obx(() => CustomTextField(
+            label: "Age",
+            keyboardType: TextInputType.number,
+            initialValue: controller.age.value,
+            onChanged: (v) => controller.updateFieldAndClearError('age', v),
+            errorText: controller.ageError.value,
+          )),
           BirthDateField(
             dateValue: controller.birthDate,
             errorValue: controller.birthDateError,
             onDatePicked: (value) =>
                 controller.updateFieldAndClearError('birthDate', value),
           ),
-
-          Obx(() => CustomTextField(
+          const SizedBox(height: 16),
+          Obx(() => CustomDropdownField(
             label: "Blood Group",
-            initialValue: controller.bloodGroup.value,
-            onChanged: (v) => controller.updateField('bloodGroup', v),
-            errorText: controller.bloodGroupError.value,
+            selectedValue: controller.bloodGroup.value,
+            options: bloodGroups,
+            onChanged: (val) {
+              controller.updateFieldAndClearError('bloodGroup', val);
+            },
+          ),),
+          Obx(() => CustomTextField(
+            label: "Qualification",
+            initialValue: controller.qualification.value,
+            onChanged: (v) => controller.updateFieldAndClearError('qualification', v),
+            errorText: controller.qualificationError.value,
+          )),
+          Obx(() => CustomTextField(
+            label: "Marital Status",
+            initialValue: controller.maritalStatus.value,
+            onChanged: (v) => controller.updateFieldAndClearError('maritalStatus', v),
+            errorText: controller.maritalStatusError.value,
+          )),
+          Obx(() => CustomTextField(
+            label: "Exact Nature of Duties",
+            initialValue: controller.natureOfDuties.value,
+            onChanged: (v) => controller.updateFieldAndClearError('natureOfDuties', v),
+            errorText: controller.natureOfDutiesError.value,
           )),
           // Obx(() => CustomTextField(
           //   label: "Medical Conditions",

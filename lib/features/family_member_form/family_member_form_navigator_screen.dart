@@ -42,6 +42,8 @@ class FamilyMemberRegistrationScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const SizedBox(height:20,),
+
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -49,29 +51,38 @@ class FamilyMemberRegistrationScreen extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16),
-                  child: SizedBox(
-                    height: 600,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: 600, // Minimum height to prevent early cut-off
+                    ),
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: 100,
-                          child: CustomVerticalStepper(
-                            titles: stepTitles, currentStep: controller.currentStep,
-                          ),
+                        const Text(
+                          "Register a New Member",
+                          style: TextStyle(fontWeight: FontWeight.w700,fontSize: 18,color: Color(
+                              0xFF19578A))
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Obx(() => steps[controller.currentStep.value]),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 80,
+                              child: CustomVerticalStepper(
+                                titles: stepTitles, currentStep: controller.currentStep,
+                              ),
+                            ),
+                            Expanded(
+                              child: Obx(() => steps[controller.currentStep.value]),
+                            ),
+                          ],
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
 
-              /// Navigation Buttons
               Obx(() => Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -91,7 +102,7 @@ class FamilyMemberRegistrationScreen extends StatelessWidget {
                       final current = controller.currentStep.value;
                       if (_validateStep(current)) {
                         if (current == steps.length - 1) {
-                          controller.submitMember();
+                          controller.submitFamilyMemberForm();
                           Get.offAllNamed("/dashboard");
                         } else {
                           controller.nextStep();

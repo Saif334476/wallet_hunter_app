@@ -46,7 +46,6 @@ class FamilyAddressInfoStep extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          /// Country
           Obx(() => PlacePickerTextField(
             label: "Country",
             onSelected: (desc) {
@@ -60,7 +59,6 @@ class FamilyAddressInfoStep extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          /// State
           Obx(() {
             final country = controller.addressCountry.value;
             return PlacePickerTextField(
@@ -74,24 +72,8 @@ class FamilyAddressInfoStep extends StatelessWidget {
               errorText: controller.addressStateError.value,
             );
           }),
-
           const SizedBox(height: 16),
 
-
-          Obx(() {
-            final state = controller.addressState.value;
-            return PlacePickerTextField(
-              label: "City",
-              componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
-              onSelected: (desc) {
-                controller.updateFieldAndClearError('addressCity', desc);
-                controller.updateField('addressDistrict', '');
-              },
-             // errorText: controller.addressCityError.value, // ✅ Corrected
-            );
-          }),
-
-          const SizedBox(height: 16),
 
 
           Obx(() {
@@ -104,10 +86,48 @@ class FamilyAddressInfoStep extends StatelessWidget {
               },
             );
           }),
+          const SizedBox(height: 16),
+          Obx(() {
+            final state = controller.addressState.value;
+            return PlacePickerTextField(
+              label: "City",
+              componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
+              onSelected: (desc) {
+                controller.updateFieldAndClearError('addressCity', desc);
+                controller.updateField('addressDistrict', '');
+              },
+             // errorText: controller.addressCityError.value, // ✅ Corrected
+            );
+          }),
+          const SizedBox(height: 16),
+          Obx(() {
+            final state = controller.nativeState.value;
+            return PlacePickerTextField(
+              label: "Native State",
+              componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
+              onSelected: (desc) {
+                controller.updateFieldAndClearError('nativeState', desc);
+                controller.updateField('nativeState', '');
+              },
+              // errorText: controller.addressCityError.value, // ✅ Corrected
+            );
+          }),
 
           const SizedBox(height: 16),
 
-          /// Pincode
+          Obx(() {
+            final state = controller.nativeCity.value;
+            return PlacePickerTextField(
+              label: "Native City",
+              componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
+              onSelected: (desc) {
+                controller.updateFieldAndClearError('nativeCity', desc);
+                controller.updateField('nativeCity', '');
+              },
+              // errorText: controller.addressCityError.value, // ✅ Corrected
+            );
+          }),
+          const SizedBox(height: 16),
           Obx(() => CustomTextField(
             label: "Pincode",
             keyboardType: TextInputType.number,

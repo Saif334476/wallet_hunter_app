@@ -1,29 +1,55 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../models/family_member_model.dart';
 
 class FamilyMemberFormController extends GetxController {
 
-  var name = ''.obs, age = ''.obs, gender = ''.obs, relation = ''.obs;
-  var education = ''.obs, profession = ''.obs;
+  var avatarImagePath = ''.obs;
+  var avatarImageError = RxnString();
+  final ImagePicker _picker = ImagePicker();
 
-  var nameError = RxnString(),
+  var firstName = ''.obs,
+      middleName = ''.obs,
+      lastName = ''.obs,
+      age = ''.obs,
+      gender = ''.obs,
+      maritalStatus = ''.obs,
+      qualification = ''.obs,
+      occupation = ''.obs,
+      natureOfDuties = ''.obs,
+      relation = ''.obs;
+
+  var firstNameError = RxnString(),
+      middleNameError = RxnString(),
+      lastNameError = RxnString(),
       ageError = RxnString(),
       genderError = RxnString(),
-      relationError = RxnString(),
-      educationError = RxnString(),
-      professionError = RxnString();
+      maritalStatusError = RxnString(),
+      qualificationError = RxnString(),
+      occupationError = RxnString(),
+      natureOfDutiesError = RxnString(),
+      relationError = RxnString();
 
 
   var birthDate = ''.obs, bloodGroup = ''.obs, disability = ''.obs;
-
   var birthDateError = RxnString(),
       bloodGroupError = RxnString(),
       disabilityError = RxnString();
 
 
-  var contactEmail = ''.obs, contactPhone = ''.obs, contactAlternate = ''.obs;
+  var contactEmail = ''.obs,
+      contactPhone = ''.obs,
+      contactAlternate = ''.obs,
+      contactLandline = ''.obs,
+      contactSocial = ''.obs;
+
   var contactEmailError = RxnString(),
       contactPhoneError = RxnString(),
-      contactAlternateError = RxnString();
+      contactAlternateError = RxnString(),
+      contactLandlineError = RxnString(),
+      contactSocialError = RxnString();
 
 
   var addressFlat = ''.obs,
@@ -34,7 +60,9 @@ class FamilyMemberFormController extends GetxController {
       addressState = ''.obs,
       addressCity = ''.obs,
       addressDistrict = ''.obs,
-      addressPincode = ''.obs;
+      addressPincode = ''.obs,
+      nativeState=''.obs,
+      nativeCity=''.obs;
 
   var addressFlatError = RxnString(),
       addressBuildingError = RxnString(),
@@ -44,10 +72,19 @@ class FamilyMemberFormController extends GetxController {
       addressStateError = RxnString(),
       cityError = RxnString(),
       addressDistrictError = RxnString(),
-      addressPincodeError = RxnString();
+      addressPincodeError = RxnString(),
+      nativeStateError=RxnString(),
+      nativeCityError=RxnString();
 
   var currentStep = 0.obs;
 
+  Future<void> pickAvatarImage() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      avatarImagePath.value = picked.path;
+      avatarImageError.value = null;
+    }
+  }
   void nextStep() {
     if (currentStep.value < 4) currentStep.value++;
   }
@@ -56,20 +93,34 @@ class FamilyMemberFormController extends GetxController {
     if (currentStep.value > 0) currentStep.value--;
   }
 
+
   void updateField(String field, String value) {
     switch (field) {
-      case 'name': name.value = value; break;
+
+      case 'firstName': firstName.value = value; break;
+      case 'middleName': middleName.value = value; break;
+      case 'lastName': lastName.value = value; break;
       case 'age': age.value = value; break;
       case 'gender': gender.value = value; break;
+      case 'maritalStatus': maritalStatus.value = value; break;
+      case 'qualification': qualification.value = value; break;
+      case 'occupation': occupation.value = value; break;
+      case 'natureOfDuties': natureOfDuties.value = value; break;
       case 'relation': relation.value = value; break;
-      case 'education': education.value = value; break;
-      case 'profession': profession.value = value; break;
+
+    // Personal Info
       case 'birthDate': birthDate.value = value; break;
       case 'bloodGroup': bloodGroup.value = value; break;
       case 'disability': disability.value = value; break;
+
+    // Contact Info
       case 'contactEmail': contactEmail.value = value; break;
       case 'contactPhone': contactPhone.value = value; break;
       case 'contactAlternate': contactAlternate.value = value; break;
+      case 'contactLandline': contactLandline.value = value; break;
+      case 'contactSocial': contactSocial.value = value; break;
+
+    // Address Info
       case 'addressFlat': addressFlat.value = value; break;
       case 'addressBuilding': addressBuilding.value = value; break;
       case 'addressStreet': addressStreet.value = value; break;
@@ -79,23 +130,38 @@ class FamilyMemberFormController extends GetxController {
       case 'addressCity': addressCity.value = value; break;
       case 'addressDistrict': addressDistrict.value = value; break;
       case 'addressPincode': addressPincode.value = value; break;
+      case 'nativeState': nativeState.value = value; break;
+      case 'nativeCity': nativeCity.value = value; break;
     }
   }
 
   void clearError(String field) {
     switch (field) {
-      case 'name': nameError.value = null; break;
+    // Profile
+      case 'firstName': firstNameError.value = null; break;
+      case 'middleName': middleNameError.value = null; break;
+      case 'lastName': lastNameError.value = null; break;
       case 'age': ageError.value = null; break;
       case 'gender': genderError.value = null; break;
+      case 'maritalStatus': maritalStatusError.value = null; break;
+      case 'qualification': qualificationError.value = null; break;
+      case 'occupation': occupationError.value = null; break;
+      case 'natureOfDuties': natureOfDutiesError.value = null; break;
       case 'relation': relationError.value = null; break;
-      case 'education': educationError.value = null; break;
-      case 'profession': professionError.value = null; break;
+
+    // Personal
       case 'birthDate': birthDateError.value = null; break;
       case 'bloodGroup': bloodGroupError.value = null; break;
       case 'disability': disabilityError.value = null; break;
+
+    // Contact
       case 'contactEmail': contactEmailError.value = null; break;
       case 'contactPhone': contactPhoneError.value = null; break;
       case 'contactAlternate': contactAlternateError.value = null; break;
+      case 'contactLandline': contactLandlineError.value = null; break;
+      case 'contactSocial': contactSocialError.value = null; break;
+
+    // Address
       case 'addressFlat': addressFlatError.value = null; break;
       case 'addressBuilding': addressBuildingError.value = null; break;
       case 'addressStreet': addressStreetError.value = null; break;
@@ -105,6 +171,9 @@ class FamilyMemberFormController extends GetxController {
       case 'addressCity': cityError.value = null; break;
       case 'addressDistrict': addressDistrictError.value = null; break;
       case 'addressPincode': addressPincodeError.value = null; break;
+      case 'nativeState': nativeStateError.value = null; break;
+      case 'nativeCity': nativeCityError.value = null; break;
+
     }
   }
 
@@ -113,22 +182,31 @@ class FamilyMemberFormController extends GetxController {
     clearError(field);
   }
 
-  // Validation Methods
+  // ✅ Validations
   bool validateProfileStep() {
     bool valid = true;
+    if (avatarImagePath.value.isEmpty) {
+      avatarImageError.value = 'Photo is required';
+      valid = false;
+    }
+    if (firstName.value.isEmpty) {
+      firstNameError.value = 'First Name is required';
+      valid = false;
+    }
+    if (lastName.value.isEmpty) {
+      lastNameError.value = 'Last Name is required';
+      valid = false;
+    }
 
-    if (name.value.isEmpty) {
-      nameError.value = 'Name is required';
-      valid = false;
-    }
-    if (age.value.isEmpty) {
-      ageError.value = 'Age is required';
-      valid = false;
-    }
     if (gender.value.isEmpty) {
       genderError.value = 'Gender is required';
       valid = false;
     }
+    if (occupation.value.isEmpty) {
+      occupationError.value = 'Occupation is required';
+      valid = false;
+    }
+
     if (relation.value.isEmpty) {
       relationError.value = 'Relation is required';
       valid = false;
@@ -140,6 +218,23 @@ class FamilyMemberFormController extends GetxController {
   bool validatePersonalStep() {
     bool valid = true;
 
+    if (age.value.isEmpty) {
+      ageError.value = 'Age is required';
+      valid = false;
+    }
+    if (maritalStatus.value.isEmpty) {
+      maritalStatusError.value = 'Marital status is required';
+      valid = false;
+    }
+    if (qualification.value.isEmpty) {
+      qualificationError.value = 'Qualification is required';
+      valid = false;
+    }
+
+    if (natureOfDuties.value.isEmpty) {
+      natureOfDutiesError.value = 'Exact nature of duties is required';
+      valid = false;
+    }
     if (birthDate.value.isEmpty) {
       birthDateError.value = 'Birth date is required';
       valid = false;
@@ -155,13 +250,12 @@ class FamilyMemberFormController extends GetxController {
   bool validateContactStep() {
     bool valid = true;
 
-    if (contactEmail.value.isEmpty) {
-      contactEmailError.value = 'Email is required';
+    if (contactPhone.value.isEmpty) {
+      contactPhoneError.value = 'Phone number is required';
       valid = false;
     }
-
-    if (contactPhone.value.isEmpty) {
-      contactPhoneError.value = 'Phone is required';
+    if (contactEmail.value.isEmpty) {
+      contactEmailError.value = 'Email is required';
       valid = false;
     }
 
@@ -176,7 +270,7 @@ class FamilyMemberFormController extends GetxController {
       valid = false;
     }
     if (addressBuilding.value.isEmpty) {
-      addressBuildingError.value = 'Building is required';
+      addressBuildingError.value = 'Building name is required';
       valid = false;
     }
     if (addressStreet.value.isEmpty) {
@@ -199,13 +293,78 @@ class FamilyMemberFormController extends GetxController {
       addressPincodeError.value = 'Pincode is required';
       valid = false;
     }
+    if (nativeState.value.isEmpty) {
+      nativeStateError.value = 'NativeState is required';
+      valid = false;
+    }
+    if (nativeCity.value.isEmpty) {
+      nativeCityError.value = 'NativeCity is required';
+      valid = false;
+    }
 
     return valid;
   }
+  Future<void> submitFamilyMemberForm() async {
+    if (!validateProfileStep() ||
+        !validatePersonalStep() ||
+        !validateContactStep() ||
+        !validateAddressStep()) {
+      Get.snackbar("Error", "Please fix errors before submitting.");
+      return;
+    }
 
-  void submitMember() {
-    print("✅ Family member submitted:");
-    print("Name: ${name.value}, Age: ${age.value}, Relation: ${relation.value}");
-    Get.snackbar("Success", "Family member added successfully!");
+    final headId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (headId == null) {
+      Get.snackbar("Error", "User not logged in.");
+      return;
+    }
+
+    final member = FamilyMember(
+      firstName: firstName.value,
+      middleName: middleName.value,
+      lastName: lastName.value,
+      birthDate: birthDate.value,
+      age: age.value,
+      gender: gender.value,
+      maritalStatus: maritalStatus.value,
+      qualification: qualification.value,
+      occupation: occupation.value,
+      natureOfDuties: natureOfDuties.value,
+      bloodGroup: bloodGroup.value,
+      relationWithHead: relation.value,
+      phone: contactPhone.value,
+      alternatePhone: contactAlternate.value,
+      landline: contactLandline.value,
+      email: contactEmail.value,
+      socialLink: contactSocial.value,
+      avatarPath: avatarImagePath.value,
+      flat: addressFlat.value,
+      building: addressBuilding.value,
+      street: addressStreet.value,
+      landmark: addressLandmark.value,
+      city: addressCity.value,
+      district: addressDistrict.value,
+      state: addressState.value,
+      country: addressCountry.value,
+      pincode: addressPincode.value,
+      nativeCity: nativeCity.value,
+      nativeState: nativeState.value,
+    );
+
+    try {
+      await FirebaseFirestore.instance
+          .collection('family_heads')
+          .doc(headId)
+          .collection('members')
+          .add(member.toJson());
+
+      Get.snackbar("✅ Success", "Family member submitted!");
+    } catch (e) {
+      print("❌ Error submitting member: $e");
+      Get.snackbar("Error", "Failed to submit member.");
+    }
   }
+
+
 }
