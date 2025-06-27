@@ -38,81 +38,90 @@ class FamilyMemberRegistrationScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height:20,),
-
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                      minHeight: 600, // Minimum height to prevent early cut-off
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height:20,),
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height*0.75,
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Column(
-                      children: [
-                        const Text(
-                          "Register a New Member",
-                          style: TextStyle(fontWeight: FontWeight.w700,fontSize: 18,color: Color(
-                              0xFF19578A))
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: 600,
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            SizedBox(
-                              width: 80,
-                              child: CustomVerticalStepper(
-                                titles: stepTitles, currentStep: controller.currentStep,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Register a New Member",
+                                style: TextStyle(fontWeight: FontWeight.w700,fontSize: 18,color: Color(
+                                    0xFF19578A))
                               ),
-                            ),
-                            Expanded(
-                              child: Obx(() => steps[controller.currentStep.value]),
-                            ),
-                          ],
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 80,
+                                    child: CustomVerticalStepper(
+                                      titles: stepTitles, currentStep: controller.currentStep,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Obx(() => steps[controller.currentStep.value]),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-
-              Obx(() => Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  if (controller.currentStep.value > 0)
-                    OutlinedButton(
-                      onPressed: controller.previousStep,
-                      child: const Text('Back'),
-                    )
-                  else
-                    const SizedBox(width: 100),
-                  CustomElevatedButton(
-                    label: controller.currentStep.value ==
-                        steps.length - 1
-                        ? "Submit"
-                        : "Next",
-                    onPressed: () {
-                      final current = controller.currentStep.value;
-                      if (_validateStep(current)) {
-                        if (current == steps.length - 1) {
-                          controller.submitFamilyMemberForm();
-                          Get.offAllNamed("/dashboard");
+                const SizedBox(height: 20),
+          
+                Obx(() => Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (controller.currentStep.value > 0)
+                      OutlinedButton(
+                        onPressed: controller.previousStep,
+                        child: const Text('Back'),
+                      )
+                    else
+                      const SizedBox(width: 100),
+                    CustomElevatedButton(
+                      label: controller.currentStep.value == steps.length - 1
+                          ? "Submit"
+                          : "Next",
+                      onPressed: () {
+                        print("Button pressed...");
+                        final current = controller.currentStep.value;
+                        if (_validateStep(current)) {
+                          print("Validation passed...");
+                          if (current == steps.length - 1) {
+                            print("Submitting form...");
+                            controller.submitFamilyMemberForm();
+                          } else {
+                            controller.nextStep();
+                          }
                         } else {
-                          controller.nextStep();
+                          print("Validation failed.");
                         }
-                      }
-                    },
-                  ),
-                ],
-              )),
-            ],
+                      },
+                    ),
+                  ],
+                )),
+              ],
+            ),
           ),
         ),
       ),

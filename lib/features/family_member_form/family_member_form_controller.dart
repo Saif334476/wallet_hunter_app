@@ -1,11 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../models/family_member_model.dart';
+import '../../services/firestore/firebase_firestore_services.dart';
 
 class FamilyMemberFormController extends GetxController {
-
+  final FirebaseFirestoreService _firestoreService = FirebaseFirestoreService();
   var avatarImagePath = ''.obs;
   var avatarImageError = RxnString();
   final ImagePicker _picker = ImagePicker();
@@ -108,19 +111,19 @@ class FamilyMemberFormController extends GetxController {
       case 'natureOfDuties': natureOfDuties.value = value; break;
       case 'relation': relation.value = value; break;
 
-    // Personal Info
+
       case 'birthDate': birthDate.value = value; break;
       case 'bloodGroup': bloodGroup.value = value; break;
       case 'disability': disability.value = value; break;
 
-    // Contact Info
+
       case 'contactEmail': contactEmail.value = value; break;
       case 'contactPhone': contactPhone.value = value; break;
       case 'contactAlternate': contactAlternate.value = value; break;
       case 'contactLandline': contactLandline.value = value; break;
       case 'contactSocial': contactSocial.value = value; break;
 
-    // Address Info
+
       case 'addressFlat': addressFlat.value = value; break;
       case 'addressBuilding': addressBuilding.value = value; break;
       case 'addressStreet': addressStreet.value = value; break;
@@ -137,7 +140,7 @@ class FamilyMemberFormController extends GetxController {
 
   void clearError(String field) {
     switch (field) {
-    // Profile
+
       case 'firstName': firstNameError.value = null; break;
       case 'middleName': middleNameError.value = null; break;
       case 'lastName': lastNameError.value = null; break;
@@ -149,19 +152,19 @@ class FamilyMemberFormController extends GetxController {
       case 'natureOfDuties': natureOfDutiesError.value = null; break;
       case 'relation': relationError.value = null; break;
 
-    // Personal
+
       case 'birthDate': birthDateError.value = null; break;
       case 'bloodGroup': bloodGroupError.value = null; break;
       case 'disability': disabilityError.value = null; break;
 
-    // Contact
+
       case 'contactEmail': contactEmailError.value = null; break;
       case 'contactPhone': contactPhoneError.value = null; break;
       case 'contactAlternate': contactAlternateError.value = null; break;
       case 'contactLandline': contactLandlineError.value = null; break;
       case 'contactSocial': contactSocialError.value = null; break;
 
-    // Address
+
       case 'addressFlat': addressFlatError.value = null; break;
       case 'addressBuilding': addressBuildingError.value = null; break;
       case 'addressStreet': addressStreetError.value = null; break;
@@ -182,7 +185,7 @@ class FamilyMemberFormController extends GetxController {
     clearError(field);
   }
 
-  // ✅ Validations
+
   bool validateProfileStep() {
     bool valid = true;
     if (avatarImagePath.value.isEmpty) {
@@ -206,7 +209,6 @@ class FamilyMemberFormController extends GetxController {
       occupationError.value = 'Occupation is required';
       valid = false;
     }
-
     if (relation.value.isEmpty) {
       relationError.value = 'Relation is required';
       valid = false;
@@ -305,6 +307,7 @@ class FamilyMemberFormController extends GetxController {
     return valid;
   }
   Future<void> submitFamilyMemberForm() async {
+    print("Submitting family member form...");
     if (!validateProfileStep() ||
         !validatePersonalStep() ||
         !validateContactStep() ||
@@ -314,12 +317,21 @@ class FamilyMemberFormController extends GetxController {
     }
 
     final headId = FirebaseAuth.instance.currentUser?.uid;
-
     if (headId == null) {
       Get.snackbar("Error", "User not logged in.");
       return;
     }
+    late var photoUrl;
+    try {
+      final file = File(avatarImagePath.value);
+      final downloadUrl =
+      await _firestoreService.uploadProfilePhoto(file,FirebaseAuth.instance.currentUser!.uid);
+      photoUrl = downloadUrl;
 
+      Get.snackbar("Success", "photo submitted successfully!");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to upload photo. Try again.");
+    }
     final member = FamilyMember(
       firstName: firstName.value,
       middleName: middleName.value,
@@ -338,7 +350,7 @@ class FamilyMemberFormController extends GetxController {
       landline: contactLandline.value,
       email: contactEmail.value,
       socialLink: contactSocial.value,
-      avatarPath: avatarImagePath.value,
+      avatarPath:photoUrl,
       flat: addressFlat.value,
       building: addressBuilding.value,
       street: addressStreet.value,
@@ -353,15 +365,12 @@ class FamilyMemberFormController extends GetxController {
     );
 
     try {
-      await FirebaseFirestore.instance
-          .collection('family_heads')
-          .doc(headId)
-          .collection('members')
-          .add(member.toJson());
+      await _firestoreService.addFamilyMember(headId, member);
+      Get.snackbar("Success", "Family member Registered!");
+      Get.delete<FamilyMemberFormController>();
 
-      Get.snackbar("✅ Success", "Family member submitted!");
     } catch (e) {
-      print("❌ Error submitting member: $e");
+      print("Error submitting member: $e");
       Get.snackbar("Error", "Failed to submit member.");
     }
   }

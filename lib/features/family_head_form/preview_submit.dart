@@ -50,7 +50,7 @@ class SummarySubmitScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 120,
+            width: 70,
             child: Text(
               "$label:",
               style: const TextStyle(fontWeight: FontWeight.w600),

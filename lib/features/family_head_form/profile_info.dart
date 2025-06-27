@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_hunter_app/features/family_head_form/head_form_controller.dart';
@@ -18,6 +20,41 @@ class ProfileInfoScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+       Obx(()=>
+
+           Stack(
+            children: [
+              CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.grey.shade200,
+                backgroundImage: controller.avatarImagePath.value.isNotEmpty ? FileImage(File( controller.avatarImagePath.value)) : null,
+                child:  controller.avatarImagePath.value.isEmpty
+                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                    : null,
+              ),
+              Positioned(
+                bottom: 0,
+                right: 4,
+                child: InkWell(
+                  onTap: controller.pickAvatarImage,
+                  child: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    child: const Icon(Icons.edit, size: 16, color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+    )),
+          if (controller.avatarImageError.value != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                controller.avatarImageError.value!,
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+            ),
+          const SizedBox(height: 24),
           Obx(() => CustomTextField(
                 label: "Full Name",
                 initialValue: controller.name.value,

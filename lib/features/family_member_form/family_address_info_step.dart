@@ -22,25 +22,25 @@ class FamilyAddressInfoStep extends StatelessWidget {
           Obx(() => CustomTextField(
             label: "Flat Number",
             initialValue: controller.addressFlat.value,
-            onChanged: (v) => controller.updateField('addressFlat', v),
+            onChanged: (v) => controller.updateFieldAndClearError('addressFlat', v),
             errorText: controller.addressFlatError.value,
           )),
           Obx(() => CustomTextField(
             label: "Building Name",
             initialValue: controller.addressBuilding.value,
-            onChanged: (v) => controller.updateField('addressBuilding', v),
+            onChanged: (v) => controller.updateFieldAndClearError('addressBuilding', v),
             errorText: controller.addressBuildingError.value,
           )),
           Obx(() => CustomTextField(
             label: "Street",
             initialValue: controller.addressStreet.value,
-            onChanged: (v) => controller.updateField('addressStreet', v),
+            onChanged: (v) => controller.updateFieldAndClearError('addressStreet', v),
             errorText: controller.addressStreetError.value,
           )),
           Obx(() => CustomTextField(
             label: "Landmark",
             initialValue: controller.addressLandmark.value,
-            onChanged: (v) => controller.updateField('addressLandmark', v),
+            onChanged: (v) => controller.updateFieldAndClearError('addressLandmark', v),
             errorText: controller.addressLandmarkError.value,
           )),
 
@@ -50,9 +50,6 @@ class FamilyAddressInfoStep extends StatelessWidget {
             label: "Country",
             onSelected: (desc) {
               controller.updateFieldAndClearError('addressCountry', desc);
-              controller.updateField('addressState', '');
-              controller.updateField('addressCity', '');
-              controller.updateField('addressDistrict', '');
             },
             errorText: controller.addressCountryError.value,
           )),
@@ -63,11 +60,9 @@ class FamilyAddressInfoStep extends StatelessWidget {
             final country = controller.addressCountry.value;
             return PlacePickerTextField(
               label: "State",
-              componentFilter: country.isNotEmpty ? 'country:$country' : null,
+              componentFilter: country.isNotEmpty ? 'addressState:$country' : null,
               onSelected: (desc) {
                 controller.updateFieldAndClearError('addressState', desc);
-                controller.updateField('addressCity', '');
-                controller.updateField('addressDistrict', '');
               },
               errorText: controller.addressStateError.value,
             );
@@ -75,28 +70,26 @@ class FamilyAddressInfoStep extends StatelessWidget {
           const SizedBox(height: 16),
 
 
-
           Obx(() {
-            final state = controller.addressState.value;
+            final district = controller.addressDistrict.value;
             return PlacePickerTextField(
               label: "District",
-              componentFilter: state.isNotEmpty ? 'administrative_area_level_2:$state' : null,
+              componentFilter: district.isNotEmpty ? 'administrative_area_level_2:$district' : null,
               onSelected: (desc) {
-                controller.updateField('addressDistrict', desc);
+                controller.updateFieldAndClearError('addressDistrict', desc);
               },
             );
           }),
           const SizedBox(height: 16),
           Obx(() {
-            final state = controller.addressState.value;
+            final city = controller.addressCity.value;
             return PlacePickerTextField(
               label: "City",
-              componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
+              componentFilter: city.isNotEmpty ? 'administrative_area_level_1:$city' : null,
               onSelected: (desc) {
                 controller.updateFieldAndClearError('addressCity', desc);
-                controller.updateField('addressDistrict', '');
               },
-             // errorText: controller.addressCityError.value, // ✅ Corrected
+              errorText: controller.cityError.value,
             );
           }),
           const SizedBox(height: 16),
@@ -107,9 +100,8 @@ class FamilyAddressInfoStep extends StatelessWidget {
               componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
               onSelected: (desc) {
                 controller.updateFieldAndClearError('nativeState', desc);
-                controller.updateField('nativeState', '');
               },
-              // errorText: controller.addressCityError.value, // ✅ Corrected
+               errorText: controller.nativeStateError.value,
             );
           }),
 
@@ -122,9 +114,9 @@ class FamilyAddressInfoStep extends StatelessWidget {
               componentFilter: state.isNotEmpty ? 'administrative_area_level_1:$state' : null,
               onSelected: (desc) {
                 controller.updateFieldAndClearError('nativeCity', desc);
-                controller.updateField('nativeCity', '');
+
               },
-              // errorText: controller.addressCityError.value, // ✅ Corrected
+               errorText: controller.nativeCityError.value,
             );
           }),
           const SizedBox(height: 16),
@@ -132,7 +124,7 @@ class FamilyAddressInfoStep extends StatelessWidget {
             label: "Pincode",
             keyboardType: TextInputType.number,
             initialValue: controller.addressPincode.value,
-            onChanged: (v) => controller.updateField('addressPincode', v),
+            onChanged: (v) => controller.updateFieldAndClearError('addressPincode', v),
             errorText: controller.addressPincodeError.value,
           )),
         ],

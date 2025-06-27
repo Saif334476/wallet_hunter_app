@@ -19,7 +19,7 @@ class CustomVerticalStepper extends StatelessWidget {
 
     return Obx(() {
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: List.generate(titles.length, (i) {
           final isCurrent = i == currentStep.value;

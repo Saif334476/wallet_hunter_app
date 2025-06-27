@@ -1,18 +1,19 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../models/family_head_model.dart';
+import '../../services/firestore/firebase_firestore_services.dart';
 
 class HeadFormController extends GetxController {
+  var avatarImagePath = ''.obs;
+  var avatarImageError = RxnString();
+  final ImagePicker _picker = ImagePicker();
+  final FirebaseFirestoreService _firestoreService = FirebaseFirestoreService();
 
-  var name = ''.obs,
-      age = ''.obs,
-      gender = ''.obs,
-      maritalStatus = ''.obs;
+  var name = ''.obs, age = ''.obs, gender = ''.obs, maritalStatus = ''.obs;
 
-  var occupation = ''.obs,
-      samajName = ''.obs,
-      qualification = ''.obs;
+  var occupation = ''.obs, samajName = ''.obs, qualification = ''.obs;
 
   var nameError = RxnString(),
       ageError = RxnString(),
@@ -22,35 +23,23 @@ class HeadFormController extends GetxController {
       samajNameError = RxnString(),
       qualificationError = RxnString();
 
-  var birthDate = ''.obs,
-      bloodGroup = ''.obs,
-      natureOfDuties = ''.obs;
+  var birthDate = ''.obs, bloodGroup = ''.obs, natureOfDuties = ''.obs;
 
   var birthDateError = RxnString(),
       bloodGroupError = RxnString(),
       natureOfDutiesError = RxnString();
 
-  var contactEmail = ''.obs,
-      contactPhone = ''.obs,
-      contactAlternate = ''.obs;
-  var contactLandline = ''.obs,
-      contactSocial = ''.obs;
+  var contactEmail = ''.obs, contactPhone = ''.obs, contactAlternate = ''.obs;
+  var contactLandline = ''.obs, contactSocial = ''.obs;
 
-  var contactEmailError = RxnString(),
-      contactPhoneError = RxnString();
+  var contactEmailError = RxnString(), contactPhoneError = RxnString();
 
-
-  var addressFlat = ''.obs,
-      addressBuilding = ''.obs,
-      addressStreet = ''.obs;
-  var addressLandmark = ''.obs,
-      addressCity = ''.obs,
-      addressDistrict = ''.obs;
+  var addressFlat = ''.obs, addressBuilding = ''.obs, addressStreet = ''.obs;
+  var addressLandmark = ''.obs, addressCity = ''.obs, addressDistrict = ''.obs;
   var addressState = ''.obs,
       addressNativeCity = ''.obs,
       addressNativeState = ''.obs;
-  var addressCountry = ''.obs,
-      addressPincode = ''.obs;
+  var addressCountry = ''.obs, addressPincode = ''.obs;
 
   var addressFlatError = RxnString(),
       addressBuildingError = RxnString(),
@@ -59,7 +48,6 @@ class HeadFormController extends GetxController {
       addressStateError = RxnString(),
       addressCountryError = RxnString(),
       addressPincodeError = RxnString();
-
 
   var currentStep = 0.obs;
 
@@ -71,6 +59,14 @@ class HeadFormController extends GetxController {
     if (currentStep.value > 0) currentStep.value--;
   }
 
+  Future<void> pickAvatarImage() async {
+    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      avatarImagePath.value = picked.path;
+      avatarImageError.value = null;
+    }
+  }
+
   void updateFieldAndClearError(String field, String value) {
     updateField(field, value);
     clearError(field);
@@ -78,6 +74,10 @@ class HeadFormController extends GetxController {
 
   void updateField(String field, String value) {
     switch (field) {
+
+    case 'avatarImagePath':
+      avatarImagePath.value = value;
+    break;
       case 'name':
         name.value = value;
         break;
@@ -140,6 +140,9 @@ class HeadFormController extends GetxController {
 
   void clearError(String field) {
     switch (field) {
+      case 'avatarImagePath':
+        avatarImageError.value = null;
+        break;
       case 'name':
         nameError.value = null;
         break;
@@ -200,10 +203,12 @@ class HeadFormController extends GetxController {
     }
   }
 
-
   bool validateProfileFieldsIndividually() {
     bool valid = true;
-
+    if (avatarImagePath.value.trim().isEmpty) {
+      avatarImageError.value = 'Profile pic is required';
+      valid = false;
+    }
     if (name.value.trim().isEmpty) {
       nameError.value = 'Name is required';
       valid = false;
@@ -326,11 +331,20 @@ class HeadFormController extends GetxController {
         validatePersonalFields() &&
         validateContactFields() &&
         validateAddressFields();
-
+    late var photoUrl;
     if (!isValid) {
-      Get.snackbar(
-          "⚠️ Validation Failed", "Please correct all required fields.");
+      Get.snackbar("Validation Failed", "Please fill all required fields.");
       return;
+    }
+    try {
+      final file = File(avatarImagePath.value);
+      final downloadUrl =
+          await _firestoreService.uploadProfilePhoto(file,FirebaseAuth.instance.currentUser!.uid);
+      photoUrl = downloadUrl;
+
+      Get.snackbar("Success", "Uploading photo submitted successfully!");
+    } catch (e) {
+      Get.snackbar("Error", "Failed to submit. Try again.");
     }
 
     final model = FamilyHeadModel(
@@ -360,20 +374,14 @@ class HeadFormController extends GetxController {
       addressPincode: addressPincode.value,
       addressNativeState: addressNativeState.value,
       addressNativeCity: addressNativeCity.value,
+      avatarPath: photoUrl,
+      uid: FirebaseAuth.instance.currentUser!.uid,
     );
-
     try {
-      await FirebaseFirestore.instance
-          .collection('family_heads')
-          .doc(FirebaseAuth.instance.currentUser?.uid)
-          .set({
-        ...model.toMap(),
-        'isRegistrationCompleted': true,
-      });
+      await _firestoreService.submitHeadForm(model);
 
-      Get.snackbar("✅ Success", "Form submitted successfully!");
+      Get.snackbar("Success", "Account created successfully!");
     } catch (e) {
-      print("❌ Firestore Error: $e");
       Get.snackbar("Error", "Failed to submit. Try again.");
     }
   }

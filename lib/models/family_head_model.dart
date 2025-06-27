@@ -1,14 +1,14 @@
 class FamilyHeadModel {
-
+  final String uid;
   final String name;
   final String age;
   final String gender;
-  final String maritalStatus;
   final String occupation;
   final String samajName;
+  final  String avatarPath;
+
+  final String maritalStatus;
   final String qualification;
-
-
   final String birthDate;
   final String bloodGroup;
   final String natureOfDuties;
@@ -34,6 +34,7 @@ class FamilyHeadModel {
   final String addressNativeCity;
 
   const FamilyHeadModel({
+    required this.avatarPath,
     required this.name,
     required this.age,
     required this.gender,
@@ -60,11 +61,13 @@ class FamilyHeadModel {
     required this.addressPincode,
     required this.addressNativeState,
     required this.addressNativeCity,
+    required this.uid
   });
 
 
   Map<String, dynamic> toMap() {
     return {
+      'uid':uid,
       'name': name,
       'age': age,
       'gender': gender,
@@ -91,6 +94,7 @@ class FamilyHeadModel {
       'addressPincode': addressPincode,
       'addressNativeState': addressNativeState,
       'addressNativeCity': addressNativeCity,
+      'avatarPath':avatarPath
     };
   }
 
@@ -122,7 +126,7 @@ class FamilyHeadModel {
       addressCountry: map['addressCountry'] ?? '',
       addressPincode: map['addressPincode'] ?? '',
       addressNativeState: map['addressNativeState'] ?? '',
-      addressNativeCity: map['addressNativeCity'] ?? '',
+      addressNativeCity: map['addressNativeCity'] ?? '', avatarPath: map['avatarPath'], uid: map['uid'],
     );
   }
 }

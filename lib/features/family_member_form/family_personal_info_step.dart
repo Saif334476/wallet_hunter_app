@@ -56,12 +56,22 @@ class FamilyPersonalInfoStep extends StatelessWidget {
             onChanged: (v) => controller.updateFieldAndClearError('qualification', v),
             errorText: controller.qualificationError.value,
           )),
-          Obx(() => CustomTextField(
-            label: "Marital Status",
-            initialValue: controller.maritalStatus.value,
-            onChanged: (v) => controller.updateFieldAndClearError('maritalStatus', v),
-            errorText: controller.maritalStatusError.value,
-          )),
+          Obx(
+                () => CustomDropdownField(
+              label: "Marital Status",
+              selectedValue: controller.maritalStatus.value,
+              options: const [
+                "Married",
+                "Unmarried",
+                "Divorced",
+                "Widowed",
+              ],
+              errorText: controller.maritalStatusError.value,
+              onChanged: (value) {
+                controller.updateFieldAndClearError('maritalStatus', value);
+              },
+            ),
+          ),
           Obx(() => CustomTextField(
             label: "Exact Nature of Duties",
             initialValue: controller.natureOfDuties.value,

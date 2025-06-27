@@ -55,6 +55,7 @@ dependencies:
   flutter_animate: ^4.5.2
   printing: ^5.14.2
   image_picker: ^1.1.2
+  firebase_storage: ^12.4.7
 
 
 
