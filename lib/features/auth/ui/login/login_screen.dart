@@ -99,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Get.to(RegistrationScreen());
+                    Get.to(const RegistrationScreen());
                   },
                   child: const Text("Don't have an account? Register here"),
                 ),

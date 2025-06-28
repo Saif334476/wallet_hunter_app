@@ -14,9 +14,7 @@ class SummarySubmitScreen extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Scaffold(
-
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +37,6 @@ class SummarySubmitScreen extends StatelessWidget {
 
           ],
         ),
-      ),
     );
   }
 

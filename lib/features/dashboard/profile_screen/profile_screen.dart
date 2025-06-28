@@ -21,7 +21,6 @@ class ProfileScreen extends StatelessWidget {
 
         return CustomScrollView(
           slivers: [
-            // SliverAppBar-like top container
             SliverToBoxAdapter(
               child: Container(
                 width: double.infinity,
@@ -41,59 +40,72 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Row(
+
+                    Stack(
                       children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Your Profile",
-                                  style: textTheme.headlineSmall?.copyWith(
-                                    color: colorScheme.onPrimary,
-                                    fontWeight: FontWeight.bold,
-                                  )),
-                              const SizedBox(height: 4),
-                              Text(profile?.name ?? '',
-                                  style: textTheme.titleMedium?.copyWith(
-                                    color: colorScheme.onPrimary.withOpacity(0.9),
-                                  )),
-                              Text(profile?.phoneNumber ?? '',
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    color: colorScheme.onPrimary.withOpacity(0.7),
-                                  )),
-                            ],
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.white,
+                          backgroundImage: profile.avatarPath != null &&
+                              profile.avatarPath!.isNotEmpty
+                              ? NetworkImage(profile.avatarPath!)
+                          as ImageProvider
+                              : const AssetImage("assets/images/default_avatar.png"),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 4,
+                          child: GestureDetector(
+                            onTap: controller.pickAndUploadProfileImage,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: colorScheme.primary,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 2),
+                              ),
+                              padding: const EdgeInsets.all(6),
+                              child: const Icon(Icons.edit, size: 16, color: Colors.white),
+                            ),
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.logout, color: colorScheme.onPrimary),
-                          onPressed: () => controller.logout(),
-                        ),
+                        )
                       ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    Text(profile.name ?? '',
+                        style: textTheme.titleLarge?.copyWith(
+                          color: colorScheme.onPrimary.withOpacity(0.9),
+                        )),
+                    Text(profile.contactPhone ?? '',
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onPrimary.withOpacity(0.7),
+                        )),
+
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: IconButton(
+                        icon: Icon(Icons.logout, color: colorScheme.onPrimary),
+                        onPressed: () => controller.logout(),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
 
-            // Sliver list for tiles
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
-                  _buildTile("Birth Date", profile?.birthDate ?? '', textTheme, colorScheme),
-                  _buildTile("Blood Group", profile?.bloodGroup ?? '', textTheme, colorScheme),
-                  _buildTile("Nature of Duties", profile?.natureOfDuties ?? '', textTheme, colorScheme),
+                  _buildTile("Phone Number", profile.contactPhone ?? '', textTheme, colorScheme),
+                  _buildTile("Email", profile.contactEmail ?? '', textTheme, colorScheme),
+                  _buildTile("Birth Date", profile.birthDate ?? '', textTheme, colorScheme),
+                  _buildTile("Blood Group", profile.bloodGroup ?? '', textTheme, colorScheme),
+                  _buildTile("Nature of Duties", profile.natureOfDuties ?? '', textTheme, colorScheme),
                   const SizedBox(height: 24),
-                  Divider(color: colorScheme.outlineVariant),
-                  const SizedBox(height: 12),
-                  Center(
-                    child: Text(
-                      "More features coming soon...",
-                      style: textTheme.bodyMedium?.copyWith(color: colorScheme.outline),
-                    ),
-                  ),
+
                 ]),
               ),
             ),

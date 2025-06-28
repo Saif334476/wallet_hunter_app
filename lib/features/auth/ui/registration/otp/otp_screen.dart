@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:wallet_hunter_app/widgets/animated_button.dart';
 import 'otp_controller.dart';
 
 class OTPScreen extends StatelessWidget {
@@ -66,7 +67,6 @@ class OTPScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 32),
 
-                // ✅ No need for Obx here
                 PinCodeTextField(
                   appContext: context,
                   length: 6,
@@ -89,36 +89,25 @@ class OTPScreen extends StatelessWidget {
 
                 const SizedBox(height: 24),
 
-                // ✅ isVerifying
                 Obx(() => SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
+                  child:
+                  // CustomButton(
+                  //   dotColor: Colors.white,
+                  //   backgroundColor: const Color(0xFF12559F),
+                  //   label: "Send OTP",
+                  //   onPressed: () {  controller.sendOtp(isRegistration: true);},
+                  //   isLoading: controller.isLoading.value,
+                  // )
+                  CustomButton(
+                    label: 'Verify & Continue',
                     onPressed: otpController.isVerifying.value
-                        ? null
+                        ? () {}
                         : () => otpController.verifyOTP(),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ).copyWith(
-                      backgroundColor:
-                      MaterialStatePropertyAll(colorScheme.primary),
-                      foregroundColor:
-                      MaterialStatePropertyAll(colorScheme.onPrimary),
-                    ),
-                    child: otpController.isVerifying.value
-                        ? const CircularProgressIndicator(
-                      color: Colors.white,
-                    )
-                        : Text(
-                      "Verify & Continue",
-                      style:
-                      theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                    isLoading: otpController.isVerifying.value,
+                    backgroundColor: colorScheme.primary,
+                   dotColor: Colors.white,
+                  )
                 )),
 
                 const SizedBox(height: 20),

@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BouncingDots extends StatefulWidget {
-  const BouncingDots({super.key});
+ final Color? color;
+
+  const BouncingDots({super.key,this.color,});
 
   @override
-  _BouncingDotsState createState() => _BouncingDotsState();
+  BouncingDotsState createState() => BouncingDotsState();
 }
 
-class _BouncingDotsState extends State<BouncingDots>
+class BouncingDotsState extends State<BouncingDots>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation1;
@@ -28,14 +30,14 @@ class _BouncingDotsState extends State<BouncingDots>
     );
 
     _animation2 = Tween<double>(begin: 0, end: -8).animate(
-      CurvedAnimation(parent: _controller, curve: Interval(0.2, 1.0, curve: Curves.easeInOut)),
+      CurvedAnimation(parent: _controller, curve: const Interval(0.2, 1.0, curve: Curves.easeInOut)),
     );
 
     _animation3 = Tween<double>(begin: 0, end: -8).animate(
-      CurvedAnimation(parent: _controller, curve: Interval(0.4, 1.0, curve: Curves.easeInOut)),
+      CurvedAnimation(parent: _controller, curve: const Interval(0.4, 1.0, curve: Curves.easeInOut)),
     );
     _animation4 = Tween<double>(begin: 0, end: -8).animate(
-      CurvedAnimation(parent: _controller, curve: Interval(0.6, 1.0, curve: Curves.easeInOut)),
+      CurvedAnimation(parent: _controller, curve: const Interval(0.6, 1.0, curve: Curves.easeInOut)),
     );
   }
 
@@ -51,7 +53,7 @@ class _BouncingDotsState extends State<BouncingDots>
             builder: (context, child) {
               return Transform.translate(
                 offset: Offset(0, _animation1.value),
-                child: Dot(),
+                child: Dot(color: widget.color,),
               );
             },
           ),
@@ -60,7 +62,7 @@ class _BouncingDotsState extends State<BouncingDots>
             builder: (context, child) {
               return Transform.translate(
                 offset: Offset(0, _animation2.value),
-                child: Dot(),
+                child: Dot(color: widget.color,),
               );
             },
           ),
@@ -69,7 +71,7 @@ class _BouncingDotsState extends State<BouncingDots>
             builder: (context, child) {
               return Transform.translate(
                 offset: Offset(0, _animation3.value),
-                child: Dot(),
+                child: Dot(color: widget.color,),
               );
             },
           ),
@@ -78,7 +80,7 @@ class _BouncingDotsState extends State<BouncingDots>
             builder: (context, child) {
               return Transform.translate(
                 offset: Offset(0, _animation3.value),
-                child: Dot(),
+                child:  Dot(color:widget.color),
               );
             },
           ),
@@ -95,13 +97,16 @@ class _BouncingDotsState extends State<BouncingDots>
 }
 
 class Dot extends StatelessWidget {
+  final Color? color;
+  const Dot({super.key,this.color});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 25,
       height: 12,
-      decoration: const BoxDecoration(
-        color: Color(0xFF2074B5),
+      decoration: BoxDecoration(
+        color: color ?? const Color(0xFF2074B5),
         shape: BoxShape.circle,
       ),
     );

@@ -7,6 +7,7 @@ class RegistrationController extends GetxController {
   final phoneNumber = ''.obs;
   final otpCode = ''.obs;
   final phoneError = ''.obs;
+  final isLoading = false.obs;
 
   late String _verificationId;
 
@@ -17,9 +18,10 @@ class RegistrationController extends GetxController {
 
   void sendOtp({bool isRegistration = false}) async {
     phoneError.value = '';
-
+    isLoading.value = true;
     if (phoneNumber.value.trim().isEmpty) {
       phoneError.value = 'Phone number cannot be empty';
+      isLoading.value = false;
       return;
     }
 
@@ -27,6 +29,7 @@ class RegistrationController extends GetxController {
       phoneNumber: phoneNumber.value.trim(),
       verificationCompleted: (PhoneAuthCredential credential) async {
         await _auth.signInWithCredential(credential);
+        isLoading.value = true;
         if (isRegistration) {
           Get.toNamed('/family-head-form');
         } else {
@@ -36,11 +39,12 @@ class RegistrationController extends GetxController {
       timeout: const Duration(seconds: 60),
       verificationFailed: (FirebaseAuthException e) {
         Get.snackbar('Verification Failed', e.message ?? 'Unknown error');
+        isLoading.value = false;
       },
       codeSent: (String verificationId, int? resendToken) {
         _verificationId = verificationId;
 
-        /// ✅ Set values in OTP controller
+
         final otpController = Get.put(OTPController());
         otpController.setData(
           phone: phoneNumber.value.trim(),
@@ -52,9 +56,11 @@ class RegistrationController extends GetxController {
           'verificationId': verificationId,
           'isRegistration': isRegistration,
         });
+        isLoading.value = false;
       },
       codeAutoRetrievalTimeout: (String verificationId) {
         _verificationId = verificationId;
+        isLoading.value = false;
       },
     );
   }

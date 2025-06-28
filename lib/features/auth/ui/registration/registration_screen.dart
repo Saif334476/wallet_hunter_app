@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:wallet_hunter_app/widgets/animated_button.dart';
 import '../../controller/registration_controller.dart';
 
 class RegistrationScreen extends StatelessWidget {
@@ -58,47 +59,55 @@ class RegistrationScreen extends StatelessWidget {
                   ),
                 ),
                 Obx(() => IntlPhoneField(
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    errorText: registrationController.phoneError.value.isEmpty
-                        ? null
-                        : registrationController.phoneError.value,
-                  ),
-                  initialCountryCode: 'PK',
-                  onChanged: (phone) {
-                    registrationController.updatePhoneNumber(phone.completeNumber);
-                  },
-                  keyboardType: TextInputType.phone,
-                  disableLengthCheck: true,
-                )),
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        errorText:
+                            registrationController.phoneError.value.isEmpty
+                                ? null
+                                : registrationController.phoneError.value,
+                      ),
+                      initialCountryCode: 'PK',
+                      onChanged: (phone) {
+                        registrationController
+                            .updatePhoneNumber(phone.completeNumber);
+                      },
+                      keyboardType: TextInputType.phone,
+                      disableLengthCheck: true,
+                    )),
                 const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      registrationController.sendOtp(isRegistration: true);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ).copyWith(
-                      backgroundColor: MaterialStatePropertyAll(colorScheme.primary),
-                      foregroundColor: MaterialStatePropertyAll(colorScheme.onPrimary),
-                    ),
-                    child: Text(
-                      "Send OTP",
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
+                  child:Obx(()=> CustomButton(
+                    dotColor: Colors.white,
+                    backgroundColor: const Color(0xFF12559F),
+                    label: "Send OTP",
+                    onPressed: () {  registrationController.sendOtp(isRegistration: true);},
+                    isLoading: registrationController.isLoading.value,
+                  )),
+                  // child: ElevatedButton(
+                  //   onPressed: () {
+                  //     registrationController.sendOtp(isRegistration: true);
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     padding: const EdgeInsets.symmetric(vertical: 14),
+                  //     shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //     ),
+                  //   ).copyWith(
+                  //     backgroundColor: MaterialStatePropertyAll(colorScheme.primary),
+                  //     foregroundColor: MaterialStatePropertyAll(colorScheme.onPrimary),
+                  //   ),
+                  //   child: Text(
+                  //     "Send OTP",
+                  //     style: theme.textTheme.labelLarge?.copyWith(
+                  //       fontWeight: FontWeight.w600,
+                  //     ),
+                  //   ),
+                  // ),
                 ),
-              
               ],
             ),
           ),

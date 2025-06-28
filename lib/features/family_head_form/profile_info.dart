@@ -20,32 +20,34 @@ class ProfileInfoScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-       Obx(()=>
-
-           Stack(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: Colors.grey.shade200,
-                backgroundImage: controller.avatarImagePath.value.isNotEmpty ? FileImage(File( controller.avatarImagePath.value)) : null,
-                child:  controller.avatarImagePath.value.isEmpty
-                    ? const Icon(Icons.person, size: 50, color: Colors.grey)
-                    : null,
-              ),
-              Positioned(
-                bottom: 0,
-                right: 4,
-                child: InkWell(
-                  onTap: controller.pickAvatarImage,
-                  child: CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    child: const Icon(Icons.edit, size: 16, color: Colors.white),
+          Obx(() => Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: Colors.grey.shade200,
+                    backgroundImage: controller.avatarImagePath.value.isNotEmpty
+                        ? FileImage(File(controller.avatarImagePath.value))
+                        : null,
+                    child: controller.avatarImagePath.value.isEmpty
+                        ? const Icon(Icons.person, size: 50, color: Colors.grey)
+                        : null,
                   ),
-                ),
-              ),
-            ],
-    )),
+                  Positioned(
+                    bottom: 0,
+                    right: 4,
+                    child: InkWell(
+                      onTap: controller.pickAvatarImage,
+                      child: CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        child: const Icon(Icons.edit,
+                            size: 16, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ),
           if (controller.avatarImageError.value != null)
             Padding(
               padding: const EdgeInsets.only(top: 8),
@@ -59,7 +61,8 @@ class ProfileInfoScreen extends StatelessWidget {
                 label: "Full Name",
                 initialValue: controller.name.value,
                 errorText: controller.nameError.value,
-                onChanged: (v) => controller.updateFieldAndClearError('name', v),
+                onChanged: (v) =>
+                    controller.updateFieldAndClearError('name', v),
               )),
           Obx(() => CustomTextField(
                 label: "Age",
@@ -73,36 +76,29 @@ class ProfileInfoScreen extends StatelessWidget {
                 selectedValue: controller.gender.value,
                 options: const ["Male", "Female", "Other"],
                 errorText: controller.genderError.value,
-                onChanged: (v) => controller.updateFieldAndClearError('gender', v),
+                onChanged: (v) =>
+                    controller.updateFieldAndClearError('gender', v),
               )),
-          Obx(
-            () => CustomDropdownField(
+          Obx(() {
+            final options = controller.samajList.toSet().toList();
+            final value = controller.samajName.value;
+
+            return CustomDropdownField(
               label: "Samaj Name",
               selectedValue: controller.samajName.value,
-              options: const [
-                "Lohana",
-                "Modh Vanik",
-                "Patel",
-                "Brahmin",
-                "Baniya",
-                "Rajput",
-                "Other"
-              ],
+              options: options,
               errorText: controller.samajNameError.value,
-              onChanged: (value) {
-                controller.updateFieldAndClearError('samajName', value);
-              },
-            ),
-          ),
-
+              onChanged: (v) =>
+                  controller.updateFieldAndClearError('samajName', v),
+            );
+          }),
           Obx(() => CustomTextField(
                 label: "Occupation",
                 initialValue: controller.occupation.value,
                 errorText: controller.occupationError.value,
-                onChanged: (v) => controller.updateFieldAndClearError('occupation', v),
+                onChanged: (v) =>
+                    controller.updateFieldAndClearError('occupation', v),
               )),
-
-
         ],
       ),
     );

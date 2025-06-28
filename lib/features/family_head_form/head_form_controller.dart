@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +11,26 @@ class HeadFormController extends GetxController {
   var avatarImageError = RxnString();
   final ImagePicker _picker = ImagePicker();
   final FirebaseFirestoreService _firestoreService = FirebaseFirestoreService();
+  final samajList = <String>[].obs;
+  final isSamajLoading = false.obs;
+  @override
+  void onInit() {
+    super.onInit();
+    fetchSamajs();
+  }
+
+  void fetchSamajs() async {
+    isSamajLoading.value = true;
+    try {
+      final snapshot = await FirebaseFirestore.instance.collection('samajs').get();
+      final names = snapshot.docs.map((doc) => doc['name'] as String).toList();
+      samajList.assignAll(names);
+    } catch (e) {
+      Get.snackbar("Error", "Failed to load Samaj names");
+    } finally {
+      isSamajLoading.value = false;
+    }
+  }
 
   var name = ''.obs, age = ''.obs, gender = ''.obs, maritalStatus = ''.obs;
 

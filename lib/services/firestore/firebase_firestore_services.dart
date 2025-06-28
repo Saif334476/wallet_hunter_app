@@ -59,4 +59,58 @@ class FirebaseFirestoreService {
       throw Exception("Failed to update profile photo URL");
     }
   }
+
+
+
+  Future<void> seedSamajAndTemples() async {
+    final firestore = FirebaseFirestore.instance;
+
+    final samajs = [
+      "Arya Samaj",
+      "Brahmo Samaj",
+      "Prajapati Samaj",
+      "Prarthana Samaj",
+      "Ramakrishna Mission",
+      "Deva Samaj",
+      "Aligarh Movement",
+      "Seva Sadan Society",
+    ];
+
+    final temples = [
+      {
+        "name": "Shore Temple",
+        "location": "Mahabalipuram, Tamil Nadu",
+        "samajList": ["Arya Samaj", "Brahmo Samaj"]
+      },
+      {
+        "name": "Meenakshi Amman Temple",
+        "location": "Madurai, Tamil Nadu",
+        "samajList": ["Prarthana Samaj", "Ramakrishna Mission"]
+      },
+      {
+        "name": "Sri Venkateswara Temple",
+        "location": "Pittsburgh, USA",
+        "samajList": ["Arya Samaj", "Deva Samaj"]
+      },
+      {
+        "name": "Brihadeeswarar Temple",
+        "location": "Thanjavur, Tamil Nadu",
+        "samajList": ["Prajapati Samaj", "Brahmo Samaj"]
+      },
+    ];
+
+    for (final name in samajs) {
+      await firestore.collection('samajs').add({"name": name});
+    }
+
+    for (final temple in temples) {
+      await firestore.collection('temples').add(temple);
+    }
+
+    print("✅ Samajs and Temples seeded successfully.");
+  }
+
+
+
+
 }

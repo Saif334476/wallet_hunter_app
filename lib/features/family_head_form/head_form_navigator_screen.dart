@@ -57,7 +57,7 @@ class HeadFormNavigatorScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding: const EdgeInsets.symmetric(vertical: 16,),
                   child: SizedBox(
                     height: 600,
                     child: Row(
