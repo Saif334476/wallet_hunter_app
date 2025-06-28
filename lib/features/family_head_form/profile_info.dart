@@ -48,14 +48,15 @@ class ProfileInfoScreen extends StatelessWidget {
                 ],
               )
           ),
-          if (controller.avatarImageError.value != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Text(
-                controller.avatarImageError.value!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
+          Obx(() => controller.avatarImageError.value != null
+              ? Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              controller.avatarImageError.value!,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
+          )
+              : const SizedBox.shrink()),
           const SizedBox(height: 24),
           Obx(() => CustomTextField(
                 label: "Full Name",
@@ -82,7 +83,6 @@ class ProfileInfoScreen extends StatelessWidget {
           Obx(() {
             final options = controller.samajList.toSet().toList();
             final value = controller.samajName.value;
-
             return CustomDropdownField(
               label: "Samaj Name",
               selectedValue: controller.samajName.value,

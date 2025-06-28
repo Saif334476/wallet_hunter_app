@@ -18,6 +18,11 @@ class ProfileScreen extends StatelessWidget {
         }
 
         final profile = controller.profileData.value;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (profile.samajName!.isNotEmpty) {
+            controller.fetchAssociatedTemples(profile.samajName!);
+          }
+        });
 
         return CustomScrollView(
           slivers: [
@@ -42,7 +47,6 @@ class ProfileScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
                     Stack(
                       children: [
                         CircleAvatar(
@@ -51,8 +55,8 @@ class ProfileScreen extends StatelessWidget {
                           backgroundImage: profile.avatarPath != null &&
                               profile.avatarPath!.isNotEmpty
                               ? NetworkImage(profile.avatarPath!)
-                          as ImageProvider
-                              : const AssetImage("assets/images/default_avatar.png"),
+                              : const AssetImage("assets/images/avatar_default.webp")
+                          as ImageProvider,
                         ),
                         Positioned(
                           bottom: 0,
@@ -73,7 +77,6 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
-
                     Text(profile.name ?? '',
                         style: textTheme.titleLarge?.copyWith(
                           color: colorScheme.onPrimary.withOpacity(0.9),
@@ -82,7 +85,6 @@ class ProfileScreen extends StatelessWidget {
                         style: textTheme.bodyMedium?.copyWith(
                           color: colorScheme.onPrimary.withOpacity(0.7),
                         )),
-
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
@@ -95,6 +97,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
 
+            // Main profile data tiles
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverList(
@@ -104,8 +107,20 @@ class ProfileScreen extends StatelessWidget {
                   _buildTile("Birth Date", profile.birthDate ?? '', textTheme, colorScheme),
                   _buildTile("Blood Group", profile.bloodGroup ?? '', textTheme, colorScheme),
                   _buildTile("Nature of Duties", profile.natureOfDuties ?? '', textTheme, colorScheme),
-                  const SizedBox(height: 24),
+                  _buildTile("Samaj Name", profile.samajName!, textTheme, colorScheme),
 
+                  if (controller.associatedTemples.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    Text("Associated Temples", style: textTheme.titleMedium),
+                    ...controller.associatedTemples.map((temple) {
+                      return _buildTile(
+                        temple['name'] ?? 'Unnamed',
+                        temple['location'] ?? 'Unknown',
+                        textTheme,
+                        colorScheme,
+                      );
+                    }),
+                  ],
                 ]),
               ),
             ),

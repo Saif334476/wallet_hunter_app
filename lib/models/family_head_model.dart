@@ -1,3 +1,5 @@
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+
 class FamilyHeadModel {
   final String uid;
   final String name;
@@ -33,6 +35,7 @@ class FamilyHeadModel {
   final String addressNativeState;
   final String addressNativeCity;
 
+
   const FamilyHeadModel({
     required this.avatarPath,
     required this.name,
@@ -61,7 +64,8 @@ class FamilyHeadModel {
     required this.addressPincode,
     required this.addressNativeState,
     required this.addressNativeCity,
-    required this.uid
+    required this.uid,
+
   });
 
 
@@ -94,7 +98,8 @@ class FamilyHeadModel {
       'addressPincode': addressPincode,
       'addressNativeState': addressNativeState,
       'addressNativeCity': addressNativeCity,
-      'avatarPath':avatarPath
+      'avatarPath':avatarPath,
+
     };
   }
 
@@ -126,7 +131,10 @@ class FamilyHeadModel {
       addressCountry: map['addressCountry'] ?? '',
       addressPincode: map['addressPincode'] ?? '',
       addressNativeState: map['addressNativeState'] ?? '',
-      addressNativeCity: map['addressNativeCity'] ?? '', avatarPath: map['avatarPath'], uid: map['uid'],
+      addressNativeCity: map['addressNativeCity'] ?? '',
+      avatarPath: map['avatarPath'],
+      uid: map['uid'],
+
     );
   }
 }

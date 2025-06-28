@@ -7,6 +7,7 @@ import 'package:wallet_hunter_app/features/family_head_form/personal_info.dart';
 import 'package:wallet_hunter_app/features/family_head_form/preview_submit.dart';
 import 'package:wallet_hunter_app/features/family_head_form/profile_info.dart';
 import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
+import '../../widgets/animated_button.dart';
 import '../../widgets/custom_stepper.dart';
 import '../dashboard/dashboard.dart';
 
@@ -37,8 +38,7 @@ class HeadFormNavigatorScreen extends StatelessWidget {
     final phone =
         args != null && args['phone'] != null ? args['phone'] as String : '';
     final theme = Theme.of(context);
-    final size = MediaQuery.of(context).size;
-    final isDesktop = size.width >= 700;
+
     if (phone.isNotEmpty && controller.contactPhone.value.isEmpty) {
       controller.updateField('contactPhone', phone);
     }
@@ -57,7 +57,7 @@ class HeadFormNavigatorScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16,),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   child: SizedBox(
                     height: 600,
                     child: Row(
@@ -83,7 +83,7 @@ class HeadFormNavigatorScreen extends StatelessWidget {
               ),
               const SizedBox(height: 32),
 
-              /// Navigation buttons
+
               Obx(() => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -94,21 +94,26 @@ class HeadFormNavigatorScreen extends StatelessWidget {
                         )
                       else
                         const SizedBox(width: 100),
-                      CustomElevatedButton(
-                        label: controller.currentStep.value == steps.length - 1
-                            ? 'Submit'
-                            : 'Next',
-                        onPressed: () {
-                          final current = controller.currentStep.value;
-                          if (_validateStep(current)) {
-                            if (current == steps.length - 1) {
-                              controller.submitHeadForm();
-                              Get.offAll(() => const Dashboard());
-                            } else {
-                              controller.nextStep();
+                      SizedBox(width: 100,
+                        child: CustomButton(
+                          isLoading: controller.isLoading.value,
+                          backgroundColor: const Color(0xFF12559F),
+                          dotColor: Colors.white,
+                          label: controller.currentStep.value == steps.length - 1
+                              ? 'Submit'
+                              : 'Next',
+                          onPressed: ()async {
+                            final current = controller.currentStep.value;
+                            if (_validateStep(current)) {
+                              if (current == steps.length - 1) {
+                               await controller.submitHeadForm();
+                                Get.offAll(() => const Dashboard());
+                              } else {
+                                controller.nextStep();
+                              }
                             }
-                          }
-                        },
+                          },
+                        ),
                       ),
                     ],
                   )),

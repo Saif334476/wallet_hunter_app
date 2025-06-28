@@ -17,7 +17,7 @@ class RegistrationScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(vertical: 24,horizontal: 20),
           child: Container(
             padding: const EdgeInsets.all(32),
             constraints: const BoxConstraints(maxWidth: 500),
@@ -39,10 +39,10 @@ class RegistrationScreen extends StatelessWidget {
                 Center(
                   child: Column(
                     children: [
-                      Image.asset("assets/app_logo.png", height: 80),
+                      Image.asset("assets/app_logo.png", height: 100),
                       const SizedBox(height: 16),
                       Text(
-                        "Welcome to Wallet Hunter",
+                        "Welcome to Samaj Sphere",
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),

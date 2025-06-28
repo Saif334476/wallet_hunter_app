@@ -13,6 +13,10 @@ class HeadFormController extends GetxController {
   final FirebaseFirestoreService _firestoreService = FirebaseFirestoreService();
   final samajList = <String>[].obs;
   final isSamajLoading = false.obs;
+  var isLoading = false.obs;
+  var associatedTemples = <String>[].obs;
+
+
   @override
   void onInit() {
     super.onInit();
@@ -87,11 +91,11 @@ class HeadFormController extends GetxController {
       avatarImageError.value = null;
     }
   }
-
-  void updateFieldAndClearError(String field, String value) {
+  void updateFieldAndClearError(String field, String value) async {
     updateField(field, value);
     clearError(field);
   }
+
 
   void updateField(String field, String value) {
     switch (field) {
@@ -348,6 +352,7 @@ class HeadFormController extends GetxController {
   }
 
   Future<void> submitHeadForm() async {
+    isLoading.value = true;
     bool isValid = validateProfileFieldsIndividually() &&
         validatePersonalFields() &&
         validateContactFields() &&
@@ -355,6 +360,7 @@ class HeadFormController extends GetxController {
     late var photoUrl;
     if (!isValid) {
       Get.snackbar("Validation Failed", "Please fill all required fields.");
+      isLoading.value = false;
       return;
     }
     try {
@@ -363,9 +369,10 @@ class HeadFormController extends GetxController {
           await _firestoreService.uploadProfilePhoto(file,FirebaseAuth.instance.currentUser!.uid);
       photoUrl = downloadUrl;
 
-      Get.snackbar("Success", "Uploading photo submitted successfully!");
+   //   Get.snackbar("Success", "Uploading photo submitted successfully!");
     } catch (e) {
       Get.snackbar("Error", "Failed to submit. Try again.");
+      isLoading.value = false;
     }
 
     final model = FamilyHeadModel(
@@ -397,13 +404,16 @@ class HeadFormController extends GetxController {
       addressNativeCity: addressNativeCity.value,
       avatarPath: photoUrl,
       uid: FirebaseAuth.instance.currentUser!.uid,
+
     );
     try {
       await _firestoreService.submitHeadForm(model);
 
       Get.snackbar("Success", "Account created successfully!");
+      isLoading.value = false;
     } catch (e) {
       Get.snackbar("Error", "Failed to submit. Try again.");
+      isLoading.value = false;
     }
   }
 

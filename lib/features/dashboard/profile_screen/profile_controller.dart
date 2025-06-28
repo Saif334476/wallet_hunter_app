@@ -12,11 +12,28 @@ class ProfileController extends GetxController {
 
   var profileData = ProfileModel().obs;
   var isLoading = false.obs;
+  final associatedTemples = <Map<String,dynamic>>[].obs;
+
 
   @override
   void onInit() {
     super.onInit();
     getProfileData();
+    fetchAssociatedTemples(profileData.value.samajName ?? '');
+
+  }
+  Future<void> fetchAssociatedTemples(String samaj) async {
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('temples')
+          .where('samajList', arrayContains: samaj)
+          .get();
+
+      associatedTemples.value = querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to fetch associated temples");
+      associatedTemples.clear();
+    }
   }
 
   Future<void> pickAndUploadProfileImage() async {
@@ -63,9 +80,13 @@ class ProfileController extends GetxController {
       isLoading.value = false;
     }
   }
-
+  void resetController() {
+    profileData.value = ProfileModel();
+    associatedTemples.clear();
+  }
   void logout() async {
     await _auth.signOut();
+    resetController();
     Get.offAllNamed('/registration');
   }
 }

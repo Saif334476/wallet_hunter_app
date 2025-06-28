@@ -79,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
               // App Title
               Text(
-                "Wallet Hunter",
+                "Samaj Sphere Tree",
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.primary,

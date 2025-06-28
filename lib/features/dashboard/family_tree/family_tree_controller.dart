@@ -47,7 +47,6 @@ class FamilyTreeController extends GetxController {
           head.value = null;
         }
       });
-
       _membersSubscription = _firestore.collection('family_heads').doc(uid).collection("members").snapshots().listen((membersQuery) {
         members.value = membersQuery.docs.map((doc) {
           final data = doc.data();

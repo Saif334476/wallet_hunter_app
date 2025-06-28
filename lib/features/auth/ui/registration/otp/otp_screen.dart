@@ -105,7 +105,7 @@ class OTPScreen extends StatelessWidget {
                         ? () {}
                         : () => otpController.verifyOTP(),
                     isLoading: otpController.isVerifying.value,
-                    backgroundColor: colorScheme.primary,
+                    backgroundColor: const Color(0xFF12559F),
                    dotColor: Colors.white,
                   )
                 )),

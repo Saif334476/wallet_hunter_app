@@ -12,8 +12,7 @@ class ContactInfoScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      body: SingleChildScrollView(
+    return  SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,7 +66,7 @@ class ContactInfoScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+
     );
   }
 }

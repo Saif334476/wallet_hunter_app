@@ -17,12 +17,14 @@ class FamilyTreeScreen extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final head = controller.head.value;
-        final members = controller.members;
+        final head = controller.head.value ??
+            {
+              "name": "You",
+              "relation": "Head",
+              "profilePicUrl": "",
+            };
 
-        if (head == null) {
-          return const Center(child: Text("No Head profile found."));
-        }
+        final members = controller.members;
 
         return SizedBox(
           width: double.infinity,
@@ -39,7 +41,21 @@ class FamilyTreeScreen extends StatelessWidget {
                   color: Color(0xFF2074B5),
                 ),
               ),
-              SizedBox(height: 20,),
+              const SizedBox(height: 20),
+
+              if (controller.head.value == null)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    "Showing default view, add family members to grow tree",
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 20),
+
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -91,7 +107,7 @@ class FamilyTreeScreen extends StatelessWidget {
                   children: children.map((child) {
                     return _buildTree(
                       node: child,
-                      children: [], // Add child nodes here if needed
+                      children: [], // In future: add child nodes here
                       theme: theme,
                     );
                   }).toList(),

@@ -367,13 +367,46 @@ class FamilyMemberFormController extends GetxController {
     try {
       await _firestoreService.addFamilyMember(headId, member);
       Get.snackbar("Success", "Family member Registered!");
-      Get.delete<FamilyMemberFormController>();
+      reset();
 
     } catch (e) {
       print("Error submitting member: $e");
       Get.snackbar("Error", "Failed to submit member.");
     }
   }
-
+  void reset() {
+    avatarImagePath.value = '';
+    avatarImageError.value = null;
+    firstName.value = '';
+    middleName.value = '';
+    lastName.value = '';
+    age.value = '';
+    gender.value = '';
+    maritalStatus.value = '';
+    qualification.value = '';
+    occupation.value = '';
+    natureOfDuties.value = '';
+    relation.value = '';
+    birthDate.value = '';
+    bloodGroup.value = '';
+    disability.value = '';
+    contactEmail.value = '';
+    contactPhone.value = '';
+    contactAlternate.value = '';
+    contactLandline.value = '';
+    contactSocial.value = '';
+    addressFlat.value = '';
+    addressBuilding.value = '';
+    addressStreet.value = '';
+    addressLandmark.value = '';
+    addressCountry.value = '';
+    addressState.value = '';
+    addressCity.value = '';
+    addressDistrict.value = '';
+    addressPincode.value = '';
+    nativeState.value = '';
+    nativeCity.value = '';
+    currentStep.value = 0;
+  }
 
 }
