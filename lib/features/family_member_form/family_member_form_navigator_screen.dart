@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallet_hunter_app/widgets/custom_elevated_button.dart';
+import '../../widgets/animated_button.dart';
 import '../../widgets/custom_stepper.dart';
 import 'family_address_info_step.dart';
 import 'family_contact_info_step.dart';
@@ -98,25 +99,31 @@ class FamilyMemberRegistrationScreen extends StatelessWidget {
                       )
                     else
                       const SizedBox(width: 100),
-                    CustomElevatedButton(
-                      label: controller.currentStep.value == steps.length - 1
-                          ? "Submit"
-                          : "Next",
-                      onPressed: () {
-                        print("Button pressed...");
-                        final current = controller.currentStep.value;
-                        if (_validateStep(current)) {
-                          print("Validation passed...");
-                          if (current == steps.length - 1) {
-                            print("Submitting form...");
-                            controller.submitFamilyMemberForm();
+                    SizedBox(
+                      width: 100,
+                      child: CustomButton(
+                        isLoading: controller.isLoading.value,
+                        backgroundColor: const Color(0xFF12559F),
+                        dotColor: Colors.white,
+                        label: controller.currentStep.value == steps.length - 1
+                            ? "Submit"
+                            : "Next",
+                        onPressed: () {
+                          print("Button pressed...");
+                          final current = controller.currentStep.value;
+                          if (_validateStep(current)) {
+                            print("Validation passed...");
+                            if (current == steps.length - 1) {
+                              print("Submitting form...");
+                              controller.submitFamilyMemberForm();
+                            } else {
+                              controller.nextStep();
+                            }
                           } else {
-                            controller.nextStep();
+                            print("Validation failed.");
                           }
-                        } else {
-                          print("Validation failed.");
-                        }
-                      },
+                        },
+                      ),
                     ),
                   ],
                 )),

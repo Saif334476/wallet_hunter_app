@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.example.wallet_hunter_app"
-    compileSdk = 35
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

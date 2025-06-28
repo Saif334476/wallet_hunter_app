@@ -12,6 +12,7 @@ class FamilyMemberFormController extends GetxController {
   var avatarImagePath = ''.obs;
   var avatarImageError = RxnString();
   final ImagePicker _picker = ImagePicker();
+  var isLoading = false.obs;
 
   var firstName = ''.obs,
       middleName = ''.obs,
@@ -307,12 +308,14 @@ class FamilyMemberFormController extends GetxController {
     return valid;
   }
   Future<void> submitFamilyMemberForm() async {
+    isLoading.value = true;
     print("Submitting family member form...");
     if (!validateProfileStep() ||
         !validatePersonalStep() ||
         !validateContactStep() ||
         !validateAddressStep()) {
-      Get.snackbar("Error", "Please fix errors before submitting.");
+      Get.snackbar("Error", "Please fill in all required fields.");
+      isLoading.value = false;
       return;
     }
 
@@ -328,7 +331,6 @@ class FamilyMemberFormController extends GetxController {
       await _firestoreService.uploadProfilePhoto(file,FirebaseAuth.instance.currentUser!.uid);
       photoUrl = downloadUrl;
 
-      Get.snackbar("Success", "photo submitted successfully!");
     } catch (e) {
       Get.snackbar("Error", "Failed to upload photo. Try again.");
     }
@@ -372,6 +374,8 @@ class FamilyMemberFormController extends GetxController {
     } catch (e) {
       print("Error submitting member: $e");
       Get.snackbar("Error", "Failed to submit member.");
+    }finally{
+      isLoading.value = false;
     }
   }
   void reset() {
